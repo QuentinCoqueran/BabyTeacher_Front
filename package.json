@@ -1,0 +1,25 @@
+{
+  "name": "babyteacher_front",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuentinCoqueran/BabyTeacher_Front.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/QuentinCoqueran/BabyTeacher_Front/issues"
+  },
+  "homepage": "https://github.com/QuentinCoqueran/BabyTeacher_Front#readme",
+  "devDependencies": {
+
+  },
+  "dependencies": {
+
+  }
+}
