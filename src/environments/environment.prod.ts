@@ -1,7 +1,5 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 export const environment = {
   production: true,
-  apiUrl: process.env['BACK_URL'],
+  apiUrl: 'http://51.38.190.134:3000',
 };
