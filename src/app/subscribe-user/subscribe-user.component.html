@@ -2,7 +2,7 @@
   <div id="formContent">
     <p *ngIf="returnError">
       <ngb-alert [dismissible]="true" (closed)="closeAlert()">
-        <strong>Attention !</strong> Erreur inscription.
+        <strong>Attention !</strong> {{errorMessage}}.
       </ngb-alert>
     </p>
     <br>
@@ -20,8 +20,8 @@
       <br><br>
       <div class="btn-group fadeIn fourth" role="group" ngbRadioGroup name="radioBasic" [ngModel]="role">
         <label ngbButtonLabel class="btn-primary">
-          <input ngbButton type="radio" class="btn-check" value="parents" #client (click)="modifyRole(client.value)">
-          Parents
+          <input ngbButton type="radio" class="btn-check" value="parent" #client (click)="modifyRole(client.value)">
+          Parent
         </label>
         <label ngbButtonLabel class="btn-primary ">
           <input ngbButton type="radio" class="btn-check " value="babysitter" #livreur

@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
 import {UserConnect} from 'src/app/models/UserConnect';
 import {ResponseBool} from "../models/ResponseBool";
+import {UserSubscribe} from "../models/UserSubscribe";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class SubscribeService {
   constructor(private http: HttpClient) {
   }
 
-  subscribeUser(user: UserConnect): Observable<ResponseBool> {
+  subscribeUser(user: UserSubscribe): Observable<ResponseBool> {
     return this.http.post<ResponseBool>(this.urlSubscribe, user);
   }
 

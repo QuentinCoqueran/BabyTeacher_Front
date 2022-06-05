@@ -20,12 +20,12 @@ export class ConnexionUserComponent implements OnInit {
 
   checkConnected(pseudo: string, password: string): void {
     if (pseudo.trim() != "" && password.trim() != "") {
-      this.userConnect.username = pseudo;
+      this.userConnect.login = pseudo;
       this.userConnect.password = password;
       this.connexionService.connectUser(this.userConnect).subscribe(
         res => {
 
-          if (res.token != undefined ) {
+          if (res.token != undefined) {
             this.returnError = false;
             localStorage.setItem('token', res.token);
           } else {
