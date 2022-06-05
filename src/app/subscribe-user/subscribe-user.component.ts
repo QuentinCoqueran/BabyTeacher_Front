@@ -23,13 +23,19 @@ export class SubscribeUserComponent implements OnInit {
     this.modifyRole(this.role)
   }
 
-  sendUserSubscribe(pseudo: string, password: string, lastname: string, name: string): void {
-    if (pseudo.trim() != "" && password.trim() != "" && lastname.trim() != "" && name.trim() != "") {
+  sendUserSubscribe(pseudo: string, password: string, lastname: string, name: string, age: string, sexe: string, /*photo: string, */email: string/*, description: string*/): void {
+    if (pseudo.trim() != "" && password.trim() != "" && lastname.trim() != "" && name.trim() != "" && age.trim() != "" && sexe.trim() != "" &&
+      /*photo.trim() != "" && */email.trim() != "" /*&& description.trim() != ""*/) {
       this.userSubscribe.login = pseudo;
       this.userSubscribe.password = password;
       this.userSubscribe.lastname = lastname;
       this.userSubscribe.name = name;
       this.userSubscribe.role = this.role;
+      this.userSubscribe.age = Number(age);
+      this.userSubscribe.sexe = Number(sexe);
+      //this.userSubscribe.photo = photo;
+      this.userSubscribe.email = email;
+      //this.userSubscribe.description = description;
       this.subscribeService.subscribeUser(this.userSubscribe).subscribe(
         res => {
           if(res.response){
