@@ -17,6 +17,11 @@
       </div>
       <input type="text" #login class="fadeIn second" placeholder="Pseudo">
       <input type="password" #password class="fadeIn third" placeholder="Mot de passe">
+      <input type="text" #age class="fadeIn third" placeholder="Age">
+      <input type="text" #sexe class="fadeIn third" placeholder="Sexe (1=H 2=F)">
+      <!--<input type="text" #photo class="fadeIn third" placeholder="Photo">-->
+      <input type="text" #email class="fadeIn third" placeholder="Email">
+      <!--<input type="text" #description class="fadeIn third" placeholder="Description">-->
       <br><br>
       <div class="btn-group fadeIn fourth" role="group" ngbRadioGroup name="radioBasic" [ngModel]="role">
         <label ngbButtonLabel class="btn-primary">
@@ -30,7 +35,7 @@
       </div>
       <br><br>
       <input type="submit" class="fadeIn fourth" value="Valider"
-             (click)="sendUserSubscribe(login.value,password.value,lastname.value,name.value)">
+             (click)="sendUserSubscribe(login.value,password.value,lastname.value,name.value,age.value,sexe.value,email.value)">
     </div>
 
     <div id="formFooter">
