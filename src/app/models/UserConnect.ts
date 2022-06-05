@@ -1,4 +1,4 @@
 export class UserConnect {
-  username: string | undefined;
+  login: string | undefined;
   password : string | undefined;
 }

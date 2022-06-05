@@ -1,3 +1,6 @@
 export class ResponseBool {
-  response: boolean | undefined;
+  response: {
+    response : boolean,
+    type:string
+  } | undefined;
 }
