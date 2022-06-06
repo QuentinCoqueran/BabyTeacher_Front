@@ -13,7 +13,9 @@ export class SubscribeUserComponent implements OnInit {
   userSubscribe: UserSubscribe = new UserSubscribe();
   public returnError = false;
   public role = "parent";
-  public errorMessage : string | undefined = "";
+  public sexe = "1";
+  public errorMessage: string | undefined = "";
+  public nextSubscribeBool: boolean = false;
 
 
   constructor(private subscribeService: SubscribeService, private router: Router) {
@@ -23,9 +25,22 @@ export class SubscribeUserComponent implements OnInit {
     this.modifyRole(this.role)
   }
 
-  sendUserSubscribe(pseudo: string, password: string, lastname: string, name: string, age: string, sexe: string, /*photo: string, */email: string/*, description: string*/): void {
-    if (pseudo.trim() != "" && password.trim() != "" && lastname.trim() != "" && name.trim() != "" && age.trim() != "" && sexe.trim() != "" &&
-      /*photo.trim() != "" && */email.trim() != "" /*&& description.trim() != ""*/) {
+  sendUserSubscribe(pseudo: string, password: string, lastname: string, name: string, age: string | null, sexe: string | null, email: string): void {
+    if(sexe != "1" && sexe != "2"){
+      this.errorMessage = "Erreur avec le sexe"
+      this.returnError = true;
+      return;
+    }
+    if ((pseudo.trim() != "" && password.trim() != "" && lastname.trim() != "" && name.trim() != "" &&
+      email.trim() != "" && this.role === "parent") || (pseudo.trim() != "" && password.trim() != "" && lastname.trim() != "" && name.trim() != "" &&
+      email.trim() != "" && age != null && sexe != null && this.role === "babysitter")) {
+
+      if (this.role === "babysitter" && age && parseInt(age) < 16) {
+        this.errorMessage = "Age minimum 16 ans"
+        this.returnError = true;
+        return;
+      }
+      /*&& description.trim() != ""*/ /*photo.trim() != "" && */ /*photo: string, */ /*, description: string*/
       this.userSubscribe.login = pseudo;
       this.userSubscribe.password = password;
       this.userSubscribe.lastname = lastname;
@@ -38,7 +53,7 @@ export class SubscribeUserComponent implements OnInit {
       //this.userSubscribe.description = description;
       this.subscribeService.subscribeUser(this.userSubscribe).subscribe(
         res => {
-          if(res.response){
+          if (res.response) {
             if (res.response["response"]) {
               this.errorMessage = res.response["type"];
               this.returnError = true;
@@ -52,6 +67,7 @@ export class SubscribeUserComponent implements OnInit {
           this.returnError = true;
         });
     } else {
+      this.errorMessage = "Tous les champs ne sont pas remplis"
       this.returnError = true;
     }
   }
@@ -62,5 +78,13 @@ export class SubscribeUserComponent implements OnInit {
 
   modifyRole(roleInput: string) {
     this.role = roleInput;
+  }
+
+  nextSubscribe() {
+    this.nextSubscribeBool = !this.nextSubscribeBool;
+  }
+
+  modifySexe(value: string) {
+    this.sexe = value;
   }
 }
