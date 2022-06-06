@@ -7,6 +7,7 @@ import {AppRoutingModule} from "../app-routing.module";
 import {FormsModule} from "@angular/forms";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {SubscribeUserComponent} from "./subscribe-user/subscribe-user.component";
+import { FirstConnectionBabysitterComponent } from './first-connection-babysitter/first-connection-babysitter.component';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import {SubscribeUserComponent} from "./subscribe-user/subscribe-user.component"
     AppComponent,
     ConnexionUserComponent,
     SubscribeUserComponent,
+    FirstConnectionBabysitterComponent,
   ],
   imports: [
     BrowserModule,
