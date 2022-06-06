@@ -24,10 +24,25 @@ export class ConnexionUserComponent implements OnInit {
       this.userConnect.password = password;
       this.connexionService.connectUser(this.userConnect).subscribe(
         res => {
+          console.log(res)
+          if (res.response) {
+            if (res.response["token"] != undefined) {
+              this.returnError = false;
+              localStorage.setItem('token', res.response["token"]);
 
-          if (res.token != undefined) {
-            this.returnError = false;
-            localStorage.setItem('token', res.token);
+              if (res.response["role"] === "parent") {
+                console.log(res.response["role"])
+              }
+
+              if (res.response["role"] === "babysitter") {
+                if (res.response["firstConnection"]) {
+                  this.router.navigate(['/first-connection-babysitter']);
+                }
+              }
+
+            } else {
+              this.returnError = true;
+            }
           } else {
             this.returnError = true;
           }
@@ -35,6 +50,8 @@ export class ConnexionUserComponent implements OnInit {
         error => {
           this.returnError = true;
         });
+    } else {
+      this.returnError = true;
     }
   }
 
