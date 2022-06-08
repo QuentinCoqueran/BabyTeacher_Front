@@ -1,3 +1,7 @@
 export class Token {
-  token: string | undefined;
+  token: string;
+
+  constructor(token: string) {
+    this.token = token;
+  }
 }
