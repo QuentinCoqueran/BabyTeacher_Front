@@ -9,8 +9,9 @@ import {Router} from "@angular/router";
   styleUrls: ['./connexion-user.component.css']
 })
 export class ConnexionUserComponent implements OnInit {
-  userConnect: UserConnect = new UserConnect();
-  public returnError = false;
+
+  public returnError: boolean = false;
+  public clickConnect: boolean = false;
 
   constructor(private connexionService: ConnexionService, private router: Router) {
   }
@@ -19,12 +20,11 @@ export class ConnexionUserComponent implements OnInit {
   }
 
   checkConnected(pseudo: string, password: string): void {
+    this.clickConnect = true;
     if (pseudo.trim() != "" && password.trim() != "") {
-      this.userConnect.login = pseudo;
-      this.userConnect.password = password;
-      this.connexionService.connectUser(this.userConnect).subscribe(
+      let userConnect: UserConnect = new UserConnect(pseudo, password);
+      this.connexionService.connectUser(userConnect).subscribe(
         res => {
-          console.log(res)
           if (res.response) {
             if (res.response["token"] != undefined) {
               this.returnError = false;
@@ -46,9 +46,11 @@ export class ConnexionUserComponent implements OnInit {
           } else {
             this.returnError = true;
           }
+          this.clickConnect = false;
         },
         error => {
           this.returnError = true;
+          this.clickConnect = false;
         });
     } else {
       this.returnError = true;
