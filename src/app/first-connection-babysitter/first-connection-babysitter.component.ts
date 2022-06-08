@@ -6,10 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./first-connection-babysitter.component.css']
 })
 export class FirstConnectionBabysitterComponent implements OnInit {
-
+  public returnError = false;
   constructor() { }
 
   ngOnInit(): void {
   }
-
+  closeAlert() {
+    this.returnError = false;
+  }
 }

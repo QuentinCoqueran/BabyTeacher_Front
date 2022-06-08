@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {UserConnect} from "../models/UserConnect";
 import {environment} from 'src/environments/environment';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpHeaders} from '@angular/common/http';
 import {Token} from "../models/Token";
 import {Observable} from "rxjs";
 import {ResponseUser} from "../models/ResponseUser";
@@ -25,13 +25,14 @@ export class ConnexionService {
     localStorage.removeItem("token");
   }
 
-  async isUserLoggedIn(): Promise<boolean> {
+  async isUserLoggedIn(): Promise< boolean> {
     let token = localStorage.getItem("token");
     var header = {
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${token}`)
     }
     try {
+      console.log(await this.getFirstConnection(header));
       return await this.getFirstConnection(header);
     } catch (e) {
       return false;

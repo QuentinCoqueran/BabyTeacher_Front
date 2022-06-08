@@ -6,5 +6,16 @@ export class ResponseUser {
     role: string,
     token: string,
     userId: number
-  } | undefined;
+  };
+
+  constructor(response: {
+    response: boolean,
+    type: string,
+    firstConnection: boolean,
+    role: string,
+    token: string,
+    userId: number
+  }) {
+    this.response = response;
+  }
 }

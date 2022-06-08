@@ -10,7 +10,6 @@ import {UserSubscribe} from "../models/UserSubscribe";
 })
 
 export class SubscribeUserComponent implements OnInit {
-  userSubscribe: UserSubscribe = new UserSubscribe();
   public returnError = false;
   public role = "parent";
   public sexe = "1";
@@ -41,17 +40,9 @@ export class SubscribeUserComponent implements OnInit {
         return;
       }
       /*&& description.trim() != ""*/ /*photo.trim() != "" && */ /*photo: string, */ /*, description: string*/
-      this.userSubscribe.login = pseudo;
-      this.userSubscribe.password = password;
-      this.userSubscribe.lastname = lastname;
-      this.userSubscribe.name = name;
-      this.userSubscribe.role = this.role;
-      this.userSubscribe.age = Number(age);
-      this.userSubscribe.sexe = Number(sexe);
-      //this.userSubscribe.photo = photo;
-      this.userSubscribe.email = email;
+      let userSubscribe: UserSubscribe = new UserSubscribe(pseudo,password,lastname,name,this.role,Number(age),Number(sexe),email);
       //this.userSubscribe.description = description;
-      this.subscribeService.subscribeUser(this.userSubscribe).subscribe(
+      this.subscribeService.subscribeUser(userSubscribe).subscribe(
         res => {
           if (res.response) {
             if (res.response["response"]) {
