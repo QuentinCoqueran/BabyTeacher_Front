@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ConnexionService} from "../services/connexion.service";
+import {UserSubscribe} from "../models/UserSubscribe";
 
 @Component({
   selector: 'app-first-connection-babysitter',
@@ -7,11 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FirstConnectionBabysitterComponent implements OnInit {
   public returnError = false;
-  constructor() { }
+  public user: UserSubscribe = new UserSubscribe('','','','','',0,0,'');
+
+  constructor(private authService: ConnexionService) {
+  }
 
   ngOnInit(): void {
+    this.initUser();
   }
+
   closeAlert() {
     this.returnError = false;
+  }
+
+  async initUser() {
+    let userService = await this.authService.isUserLoggedIn();
+    if(userService){
+      this.user.role = userService["role"]
+    }
+    return
   }
 }

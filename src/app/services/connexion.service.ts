@@ -25,24 +25,23 @@ export class ConnexionService {
     localStorage.removeItem("token");
   }
 
-  async isUserLoggedIn(): Promise< boolean> {
+  async isUserLoggedIn(): Promise<HttpEvent<any> | null> {
     let token = localStorage.getItem("token");
     var header = {
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${token}`)
     }
     try {
-      console.log(await this.getFirstConnection(header));
       return await this.getFirstConnection(header);
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
   async getFirstConnection(header: any) {
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
       this.http.get<any>(this.urlisUserLoggedIn, header).subscribe(data => {
-        resolve(true);
+        resolve(data);
       }, error => {
         return reject(error)
       });
