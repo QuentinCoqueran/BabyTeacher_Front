@@ -1,8 +1,8 @@
 export class Role {
-  id: number;
+  id: number | undefined;
   role: string;
 
-  constructor(id: number, role: string){
+  constructor(id: number | undefined, role: string){
     this.id = id;
     this.role = role;
   }

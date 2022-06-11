@@ -1,5 +1,5 @@
 export class PostParent {
-  id: number;
+  id: number | undefined;
   idUser: number;
   city: string;
   hourlyWage: number;
@@ -7,7 +7,7 @@ export class PostParent {
   ageChild: string;
   numberChild: number;
 
-  constructor(id: number, idUser: number, city: string, hourlyWage: number, description: string, ageChild: string, numberChild: number) {
+  constructor(id: number | undefined, idUser: number, city: string, hourlyWage: number, description: string, ageChild: string, numberChild: number) {
     this.id = id;
     this.idUser = idUser;
     this.city = city;
