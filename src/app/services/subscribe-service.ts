@@ -13,6 +13,7 @@ export class SubscribeService {
 
   private urlSubscribe = `${environment.apiUrl}/auth/subscribe`;
   private urlUpdateBabysitter = `${environment.apiUrl}/auth/updateBabysitter`;
+  private urlGetAllCategories = `${environment.apiUrl}/categorie/getAllCategories`;
 
   constructor(private http: HttpClient) {
   }
@@ -26,7 +27,7 @@ export class SubscribeService {
   }
 
   initCategories(): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}/auth/initCategories`);
+    return this.http.get<any>(this.urlGetAllCategories);
   }
 }
 

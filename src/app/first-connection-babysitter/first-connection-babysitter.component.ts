@@ -1,7 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ConnexionService} from "../services/connexion.service";
 import {UserSubscribe} from "../models/UserSubscribe";
-import {Category} from "../models/Category";
 import {UpdateBabysitter} from "../models/UpdateBabysitter";
 import {SubscribeService} from "../services/subscribe-service";
 
@@ -18,8 +17,7 @@ export class FirstConnectionBabysitterComponent implements OnInit {
   public lengthTextAreaNumber: number = 0;
   public lengthSkill: number = 0;
   public model: string;
-  public category = Category;
-  public listAllCategories = Object.keys(this.category);
+  public listAllCategories: string[] = [];
   public listUserCompetences: [{ category: string, skill: string }] = [{category: "", skill: ""}];
   public categorySelected: string = "";
   public addCompetencesBool: boolean = false;
@@ -139,9 +137,11 @@ export class FirstConnectionBabysitterComponent implements OnInit {
   }
 
   private initCategories() {
-    this.subscribeService.updateBabysitter(this.updateBabysitter).subscribe(
+    this.subscribeService.initCategories().subscribe(
       (data: any) => {
-        //navigate to the next page
+        for (let elem of data.response) {
+          this.listAllCategories.push(elem.name);
+        }
       }, (error: any) => {
         this.returnError = true;
         this.errorMessage = "Une erreur est survenue " + error;
