@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {UserConnect} from "../models/UserConnect";
 import {environment} from 'src/environments/environment';
 import {HttpClient, HttpEvent, HttpHeaders} from '@angular/common/http';
-import {Token} from "../models/Token";
 import {Observable} from "rxjs";
 import {ResponseUser} from "../models/ResponseUser";
 
@@ -40,12 +39,13 @@ export class ConnexionService {
 
   async getFirstConnection(header: any) {
     return new Promise<HttpEvent<any>>((resolve, reject) => {
-      this.http.get<any>(this.urlisUserLoggedIn, header).subscribe(data => {
+      this.http.get<HttpEvent<string>>(this.urlisUserLoggedIn, header).subscribe(data => {
         resolve(data);
       }, error => {
-        return reject(error)
+         reject(error)
       });
     });
   }
+
 
 }

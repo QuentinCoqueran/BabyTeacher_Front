@@ -8,6 +8,7 @@ import {FormsModule} from "@angular/forms";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {SubscribeUserComponent} from "./subscribe-user/subscribe-user.component";
 import { FirstConnectionBabysitterComponent } from './first-connection-babysitter/first-connection-babysitter.component';
+import {Category} from "./models/Category";
 
 
 @NgModule({

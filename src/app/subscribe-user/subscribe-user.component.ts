@@ -13,7 +13,7 @@ export class SubscribeUserComponent implements OnInit {
   public returnError = false;
   public role = "parent";
   public sexe = "1";
-  public errorMessage: string | undefined = "";
+  public errorMessage: string = "";
   public nextSubscribeBool: boolean = false;
 
 
