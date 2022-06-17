@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {UserConnect} from 'src/app/models/UserConnect';
 import {ResponseUser} from "../models/ResponseUser";
 import {UserSubscribe} from "../models/UserSubscribe";
+import {UpdateBabysitter} from "../models/UpdateBabysitter";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,8 @@ import {UserSubscribe} from "../models/UserSubscribe";
 export class SubscribeService {
 
   private urlSubscribe = `${environment.apiUrl}/auth/subscribe`;
+  private urlUpdateBabysitter = `${environment.apiUrl}/auth/updateBabysitter`;
+  private urlGetAllCategories = `${environment.apiUrl}/categorie/getAllCategories`;
 
   constructor(private http: HttpClient) {
   }
@@ -20,5 +22,12 @@ export class SubscribeService {
     return this.http.post<ResponseUser>(this.urlSubscribe, user);
   }
 
+  updateBabysitter(updateBabysitter: UpdateBabysitter): Observable<boolean> {
+    return this.http.post<boolean>(this.urlUpdateBabysitter, updateBabysitter);
+  }
+
+  initCategories(): Observable<any> {
+    return this.http.get<any>(this.urlGetAllCategories);
+  }
 }
 

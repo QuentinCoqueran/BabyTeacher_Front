@@ -6,11 +6,9 @@ export class UserSubscribe {
   role: string;
   age: number;
   sexe: number;
-  //photo: string;
   email: string;
-  //description: string ;
 
-  constructor(login: string, password: string, lastname: string, name: string, role: string, age: number, sexe: number, /*photo: string,*/ email: string, /*description: string*/) {
+  constructor(login: string, password: string, lastname: string, name: string, role: string, age: number, sexe: number,  email: string) {
     this.login = login;
     this.password = password;
     this.lastname = lastname;
@@ -18,8 +16,6 @@ export class UserSubscribe {
     this.role = role;
     this.age = age;
     this.sexe = sexe;
-    //this.photo = photo;
     this.email = email;
-    //this.description = description;
   }
 }
