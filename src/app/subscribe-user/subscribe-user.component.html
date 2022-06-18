@@ -54,7 +54,7 @@
       <input type="number" #age placeholder="Age" min="0" max="100" oninput="this.value = this.value.replace(/[^0-9.]/g, '');
        this.value = this.value.replace(/^(?!(?:\d{1,2}|100)$)[0-9]\d+$/,100);">
 <br><br>
-      <div class="btn-group  " role="group" ngbRadioGroup name="radioBasic" [ngModel]="sexe">
+      <div class="btn-group" role="group" ngbRadioGroup name="radioBasic" [ngModel]="sexe">
         <label ngbButtonLabel class="btn-primary">
           <input ngbButton type="radio" class="btn-check" value="1" #homme (click)="modifySexe(homme.value)">
           Homme

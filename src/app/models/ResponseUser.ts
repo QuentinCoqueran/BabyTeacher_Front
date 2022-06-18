@@ -5,7 +5,8 @@ export class ResponseUser {
     firstConnection: boolean,
     role: string,
     token: string,
-    userId: number
+    userId: number,
+    login: string,
   };
 
   constructor(response: {
@@ -14,7 +15,8 @@ export class ResponseUser {
     firstConnection: boolean,
     role: string,
     token: string,
-    userId: number
+    userId: number,
+    login: string
   }) {
     this.response = response;
   }

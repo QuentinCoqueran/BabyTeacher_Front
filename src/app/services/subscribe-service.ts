@@ -13,6 +13,7 @@ export class SubscribeService {
 
   private urlSubscribe = `${environment.apiUrl}/auth/subscribe`;
   private urlUpdateBabysitter = `${environment.apiUrl}/auth/updateBabysitter`;
+  private urlUpdateUser = `${environment.apiUrl}/auth/updateUser`;
   private urlGetAllCategories = `${environment.apiUrl}/categorie/getAllCategories`;
 
   constructor(private http: HttpClient) {
@@ -25,7 +26,9 @@ export class SubscribeService {
   updateBabysitter(updateBabysitter: UpdateBabysitter): Observable<boolean> {
     return this.http.post<boolean>(this.urlUpdateBabysitter, updateBabysitter);
   }
-
+  updateUser(updateUser: UserSubscribe): Observable<boolean> {
+    return this.http.post<boolean>(this.urlUpdateUser, updateUser);
+  }
   initCategories(): Observable<any> {
     return this.http.get<any>(this.urlGetAllCategories);
   }

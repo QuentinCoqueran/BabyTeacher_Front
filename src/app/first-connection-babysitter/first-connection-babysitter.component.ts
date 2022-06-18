@@ -3,6 +3,7 @@ import {ConnexionService} from "../services/connexion.service";
 import {UserSubscribe} from "../models/UserSubscribe";
 import {UpdateBabysitter} from "../models/UpdateBabysitter";
 import {SubscribeService} from "../services/subscribe-service";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -23,11 +24,12 @@ export class FirstConnectionBabysitterComponent implements OnInit {
   public addCompetencesBool: boolean = false;
   public errorMessage: string = "";
   public userId: number;
+
   updateBabysitter: UpdateBabysitter = new UpdateBabysitter();
   @ViewChild("skills") skills: ElementRef;
 
 
-  constructor(private authService: ConnexionService, private subscribeService: SubscribeService) {
+  constructor(private authService: ConnexionService, private subscribeService: SubscribeService, private router: Router) {
   }
 
 
@@ -130,6 +132,12 @@ export class FirstConnectionBabysitterComponent implements OnInit {
     this.subscribeService.updateBabysitter(this.updateBabysitter).subscribe(
       (data: any) => {
         //navigate to the next page
+        if (data.response) {
+          this.router.navigate(['/profile']);
+        } else {
+          this.returnError = true;
+          this.errorMessage = data.message;
+        }
       }, (error: any) => {
         this.returnError = true;
         this.errorMessage = "Une erreur est survenue " + error;
