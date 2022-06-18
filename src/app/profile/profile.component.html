@@ -1,0 +1,130 @@
+<div class="container">
+  <div class="main-body">
+    <p *ngIf="returnError">
+      <ngb-alert [dismissible]="true" (closed)="closeAlert()">
+        <strong>Attention !</strong> {{errorMessage}}.
+      </ngb-alert>
+    </p>
+    <br>
+    <div class="row gutters-sm">
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center text-center text-break">
+              <img [src]='pictureProfile' alt="Admin" class="rounded-circle"
+                   width="150">
+              <div class="mt-3">
+                <h4>@{{user['login']}}</h4>
+                <p class="text-secondary mb-1">{{user['role']}}</p>
+                <p class="text-muted font-size-sm" *ngIf="user['description'] != 'null'">{{user['description']}}</p>
+                <input type="submit" value="Message" *ngIf='!samePeople'>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-3 text-center">
+          <h6 class="mb-0">Avis</h6>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3" *ngIf="!modificationUserBool">
+                <h6 class="mb-0">Nom Complet</h6>
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                {{user['name'].charAt(0).toUpperCase() + user['name'].substr(1)}} {{user['lastname'].toUpperCase()}}
+              </div>
+              <div class="col-sm-3" *ngIf="modificationUserBool">
+                <h6 class="mb-0">Prenom</h6>
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                <input [(ngModel)]="user['name']">
+              </div>
+            </div>
+            <hr *ngIf="modificationUserBool">
+            <div class="row">
+              <div class="col-sm-3" *ngIf="modificationUserBool">
+                <h6 class="mb-0">Nom</h6>
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                <input [(ngModel)]="user['lastname']">
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                {{user['email']}}
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                <input [(ngModel)]="user['email']">
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Sexe</h6>
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                {{sexeUser}}
+              </div>
+              <div class="btn-group w-25 " role="group" ngbRadioGroup name="radioBasic" [ngModel]="sexe"
+                   *ngIf="modificationUserBool">
+                <label ngbButtonLabel class="btn-primary">
+                  <input ngbButton type="radio" class="btn-check" value="1" #homme (click)="modifySexe(homme.value)">
+                  Homme
+                </label>
+                <label ngbButtonLabel class="btn-primary ">
+                  <input ngbButton type="radio" class="btn-check " value="2" #femme
+                         (click)="modifySexe(femme.value)"> Femme
+                </label>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Age</h6>
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                {{user['age']}}
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                <input [(ngModel)]="user['age']" type="number" placeholder="Age" min="0" max="100" oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+       this.value = this.value.replace(/^(?!(?:\d{1,2}|100)$)[0-9]\d+$/,100);">
+              </div>
+            </div>
+            <hr>
+            <div class="row" *ngIf="modificationUserBool">
+              <div class="col-sm-3">
+                <h6 class="mb-0">Description <span class="text-info">{{lengthTextAreaNumber}}
+                  /100</span></h6>
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                {{user['age']}}
+              </div>
+              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                <textarea [(ngModel)]="user['description']" #box type="text" id="form7"
+                          class="fadeIn second  form-control" maxlength="100"
+                          (keyup)="onKeyUpTextArea(box)"></textarea>
+              </div>
+            </div>
+            <hr *ngIf="modificationUserBool">
+            <div class="row">
+              <div *ngIf="!modificationUserBool">
+                <input type="submit" value="Modifier" (click)="modificationUser()" *ngIf='samePeople'>
+              </div>
+              <div *ngIf="modificationUserBool">
+                <input type="submit" value="Enregistrer"
+                       (click)="updateUser()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
