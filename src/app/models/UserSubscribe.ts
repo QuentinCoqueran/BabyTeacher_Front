@@ -1,4 +1,5 @@
 export class UserSubscribe {
+  id : number | undefined;
   login: string;
   password: string;
   lastname: string;
@@ -7,6 +8,8 @@ export class UserSubscribe {
   age: number;
   sexe: number;
   email: string;
+  photo: string | undefined;
+  description: string | undefined;
 
   constructor(login: string, password: string, lastname: string, name: string, role: string, age: number, sexe: number,  email: string) {
     this.login = login;

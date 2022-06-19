@@ -12,6 +12,8 @@ export class ConnexionService {
 
   private urlConnection = `${environment.apiUrl}/auth/login`;
   private urlisUserLoggedIn = `${environment.apiUrl}/auth/me`;
+  private urlRole = `${environment.apiUrl}/auth/getRoleByUserId`;
+  private urlUserByLogin = `${environment.apiUrl}/auth/getUserLogin`;
 
   constructor(private http: HttpClient) {
   }
@@ -22,6 +24,14 @@ export class ConnexionService {
 
   logout(): void {
     localStorage.removeItem("token");
+  }
+
+  async getRoleByToken(id_user: number): Promise<HttpEvent<any> | null> {
+    try {
+      return await this.getRole(id_user);
+    } catch (e) {
+      return null;
+    }
   }
 
   async isUserLoggedIn(): Promise<HttpEvent<any> | null> {
@@ -37,12 +47,40 @@ export class ConnexionService {
     }
   }
 
+  async getUserByLogin(login: string): Promise<HttpEvent<any> | null> {
+    try {
+      return await this.getUser(login);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getUser(login: any) {
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
+      this.http.get<HttpEvent<string>>(this.urlUserByLogin + "/" + login).subscribe(data => {
+        resolve(data);
+      }, error => {
+        reject(error)
+      });
+    });
+  }
+
+  async getRole(id_user: number) {
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
+      this.http.get<HttpEvent<string>>(this.urlRole + "/" + id_user).subscribe(data => {
+        resolve(data);
+      }, error => {
+        reject(error)
+      });
+    });
+  }
+
   async getFirstConnection(header: any) {
     return new Promise<HttpEvent<any>>((resolve, reject) => {
       this.http.get<HttpEvent<string>>(this.urlisUserLoggedIn, header).subscribe(data => {
         resolve(data);
       }, error => {
-         reject(error)
+        reject(error)
       });
     });
   }

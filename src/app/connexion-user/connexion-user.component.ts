@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserConnect} from "../models/UserConnect";
 import {ConnexionService} from "../services/connexion.service";
-import {Router} from "@angular/router";
+import {Params, Router} from "@angular/router";
 
 @Component({
   selector: 'app-connexion-user',
@@ -38,6 +38,12 @@ export class ConnexionUserComponent implements OnInit {
                 if (res.response["firstConnection"]) {
                   this.router.navigate(['/first-connection-babysitter']);
                 }
+                const queryParams: Params = {login: res.response["login"]};
+                this.router.navigate(
+                  ['/profile'],
+                  {
+                    queryParams: queryParams,
+                  });
               }
 
             } else {
