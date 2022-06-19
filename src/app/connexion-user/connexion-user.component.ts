@@ -24,7 +24,7 @@ export class ConnexionUserComponent implements OnInit {
     if (pseudo.trim() != "" && password.trim() != "") {
       let userConnect: UserConnect = new UserConnect(pseudo, password);
       this.connexionService.connectUser(userConnect).subscribe(
-        res => {
+        async res => {
           if (res.response) {
             if (res.response["token"] != undefined) {
               this.returnError = false;
@@ -36,10 +36,12 @@ export class ConnexionUserComponent implements OnInit {
 
               if (res.response["role"] === "babysitter") {
                 if (res.response["firstConnection"]) {
-                  this.router.navigate(['/first-connection-babysitter']);
+                  console.log("toto")
+                  await this.router.navigate(['/first-connection-babysitter']);
+                  return;
                 }
                 const queryParams: Params = {login: res.response["login"]};
-                this.router.navigate(
+                await this.router.navigate(
                   ['/profile'],
                   {
                     queryParams: queryParams,
