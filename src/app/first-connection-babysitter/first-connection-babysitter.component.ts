@@ -33,9 +33,13 @@ export class FirstConnectionBabysitterComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
-    this.initUser();
-    this.initCategories();
+  async ngOnInit(): Promise<void> {
+    if (await this.getFirstConnexion()) {
+      this.initUser();
+      this.initCategories();
+    } else {
+      await this.router.navigate(['/login']);
+    }
   }
 
   readUrl(event: any) {
@@ -154,5 +158,9 @@ export class FirstConnectionBabysitterComponent implements OnInit {
         this.returnError = true;
         this.errorMessage = "Une erreur est survenue " + error;
       });
+  }
+
+  private async getFirstConnexion() {
+    return  await this.authService.getFirstConnexion();
   }
 }
