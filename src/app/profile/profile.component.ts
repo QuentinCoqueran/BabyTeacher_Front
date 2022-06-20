@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ConnexionService} from "../services/connexion.service";
 import {UserSubscribe} from "../models/UserSubscribe";
 import {SubscribeService} from "../services/subscribe-service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-profile',
@@ -25,7 +25,7 @@ export class ProfileComponent implements OnInit {
   Object = Object;
   pictureProfile: string = "../assets/avatar.png";
 
-  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute) {
+  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -42,12 +42,19 @@ export class ProfileComponent implements OnInit {
           console.log(this.samePeople);
         }
       }
+    } else {
+      await this.router.navigate(['/login']);
+      return;
     }
   }
 
   async initUserByLogin() {
     this.route.queryParams.subscribe(async params => {
       this.loginParam = params['login'];
+      if (!this.loginParam) {
+        await this.router.navigate(['/login']);
+        return;
+      }
       let userService = await this.authService.getUserByLogin(this.loginParam);
       if (userService) {
         for (let i = 0; i < Object.keys(userService).length; i++) {
@@ -94,10 +101,11 @@ export class ProfileComponent implements OnInit {
           }
         }
         await this.initRole();
+      } else {
+        await this.router.navigate(['/login']);
+        return;
       }
-
     });
-
   }
 
   async initRole() {
@@ -137,7 +145,7 @@ export class ProfileComponent implements OnInit {
         this.returnError = true;
         return;
       }
-      if (!this.user.age || this.user.login && !this.user.lastname || !this.user.name || !this.user.email  || !this.user.sexe) {
+      if (!this.user.age || this.user.login && !this.user.lastname || !this.user.name || !this.user.email || !this.user.sexe) {
         this.errorMessage = "Veuillez remplir tous les champs";
         this.returnError = true;
         return;

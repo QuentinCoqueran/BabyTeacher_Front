@@ -14,6 +14,8 @@ export class ConnexionService {
   private urlisUserLoggedIn = `${environment.apiUrl}/auth/me`;
   private urlRole = `${environment.apiUrl}/auth/getRoleByUserId`;
   private urlUserByLogin = `${environment.apiUrl}/auth/getUserLogin`;
+  private urlFistConnexion = `${environment.apiUrl}/auth/getFirstConnexion`;
+  private urlAllUser = `${environment.apiUrl}/auth/getAllUsers`;
 
   constructor(private http: HttpClient) {
   }
@@ -41,7 +43,7 @@ export class ConnexionService {
         .set('Authorization', `Bearer ${token}`)
     }
     try {
-      return await this.getFirstConnection(header);
+      return await this.getUserData(header);
     } catch (e) {
       return null;
     }
@@ -75,7 +77,7 @@ export class ConnexionService {
     });
   }
 
-  async getFirstConnection(header: any) {
+  async getUserData(header: any) {
     return new Promise<HttpEvent<any>>((resolve, reject) => {
       this.http.get<HttpEvent<string>>(this.urlisUserLoggedIn, header).subscribe(data => {
         resolve(data);
@@ -86,4 +88,36 @@ export class ConnexionService {
   }
 
 
+  async getFirstConnexion() {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    try {
+      return await this.getBoolFirstConnexion(header);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getBoolFirstConnexion(header: any) {
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
+      this.http.get<HttpEvent<string>>(this.urlFistConnexion, header).subscribe(data => {
+        resolve(data);
+      }, error => {
+        reject(error)
+      });
+    });
+  }
+
+  getAllUsers() {
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
+      this.http.get<HttpEvent<string>>(this.urlAllUser).subscribe(data => {
+        resolve(data);
+      }, error => {
+        reject(error)
+      });
+    });
+  }
 }

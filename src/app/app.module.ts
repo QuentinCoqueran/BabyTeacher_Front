@@ -9,6 +9,7 @@ import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {SubscribeUserComponent} from "./subscribe-user/subscribe-user.component";
 import { FirstConnectionBabysitterComponent } from './first-connection-babysitter/first-connection-babysitter.component';
 import { ProfileComponent } from './profile/profile.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 
 
@@ -19,6 +20,7 @@ import { ProfileComponent } from './profile/profile.component';
     SubscribeUserComponent,
     FirstConnectionBabysitterComponent,
     ProfileComponent,
+    NavbarComponent,
   ],
   imports: [
     BrowserModule,
