@@ -120,4 +120,14 @@ export class ConnexionService {
       });
     });
   }
+
+  getSkills(login: string) {
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
+      this.http.get<HttpEvent<string>>(`${environment.apiUrl}/categorie/getSkillsByUserId/${login}`).subscribe(data => {
+        resolve(data);
+      }, error => {
+        reject(error)
+      });
+    });
+  }
 }
