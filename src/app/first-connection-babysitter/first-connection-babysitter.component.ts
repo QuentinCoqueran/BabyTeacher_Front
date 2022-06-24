@@ -149,6 +149,7 @@ export class FirstConnectionBabysitterComponent implements OnInit {
   }
 
   private initCategories() {
+    this.listAllCategories = [];
     this.subscribeService.initCategories().subscribe(
       (data: any) => {
         for (let elem of data.response) {

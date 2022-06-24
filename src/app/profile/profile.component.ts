@@ -26,12 +26,18 @@ export class ProfileComponent implements OnInit {
   public displayInformationsBool: boolean = false;
   public modificationUserBool: boolean = false;
   public modificationSkillsBool: boolean = false;
-
-  public skills: [{ skills: string, categorie: string }] = [{skills: '', categorie: ''}];
+  public listAllCategories: string[] = [];
+  public listAllSkills: [{ skills: string, categorie: string }] = [{skills: '', categorie: ''}];
+  public listAllSkillsUpdate: [{ skills: string, categorie: string, index: number }] = [{
+    skills: '',
+    categorie: '',
+    index: 0
+  }];
   Object = Object;
   pictureProfile: string = "../assets/avatar.png";
+  private categorySelected: string;
 
-  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private router: Router) {
+  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -135,6 +141,7 @@ export class ProfileComponent implements OnInit {
 
   modificationSkills() {
     this.modificationSkillsBool = !this.modificationSkillsBool;
+    this.initCategories();
   }
 
   modifySexe(value: string) {
@@ -189,15 +196,15 @@ export class ProfileComponent implements OnInit {
   }
 
   private initSkills() {
-    this.skills = [{skills: '', categorie: ''}];
+    this.listAllSkills = [{skills: '', categorie: ''}];
     this.authService.getSkills(this.user.login).then(
       (data: any) => {
         if (data.response) {
           for (let i = 0; i < data.response.length; i++) {
-            if (this.skills[0].skills == '') {
-              this.skills[0] = {skills: data.response[i]["name"], categorie: data.response[i]["test"]};
+            if (this.listAllSkills[0].skills == '') {
+              this.listAllSkills[0] = {skills: data.response[i]["name"], categorie: data.response[i]["test"]};
             } else {
-              this.skills.push({skills: data.response[i]["name"], categorie: data.response[i]["test"]});
+              this.listAllSkills.push({skills: data.response[i]["name"], categorie: data.response[i]["test"]});
             }
           }
         } else {
@@ -228,7 +235,70 @@ export class ProfileComponent implements OnInit {
 
   updateSkills() {
     if (this.modificationSkillsBool) {
+      for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+        if (this.listAllSkillsUpdate[i].skills != '') {
+          this.listAllSkills[this.listAllSkillsUpdate[i].index].skills = this.listAllSkillsUpdate[i].skills;
+        }
+        if (this.listAllSkillsUpdate[i].categorie != '') {
+          this.listAllSkills[this.listAllSkillsUpdate[i].index].categorie = this.listAllSkillsUpdate[i].categorie;
+        }
+      }
+    }
+    this.modificationSkillsBool = !this.modificationSkillsBool;
+    console.log(this.listAllSkills);
+  }
 
+
+  private initCategories() {
+    this.listAllCategories = [];
+    this.subscribeService.initCategories().subscribe(
+      (data: any) => {
+        for (let elem of data.response) {
+          this.listAllCategories.push(elem.name);
+        }
+      }, (error: any) => {
+        this.returnError = true;
+        this.errorMessage = "Une erreur est survenue " + error;
+      });
+  }
+
+  onChangeCategorie($event: any, index: number) {
+    if ($event.target.value == '') {
+      return;
+    }
+    let categorie = $event.target.value;
+    if (this.listAllSkillsUpdate[0].skills == "") {
+      this.listAllSkillsUpdate[0].categorie = categorie;
+      this.listAllSkillsUpdate[0].index = index;
+    } else {
+      for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+        if (this.listAllSkillsUpdate[i].index == index) {
+          this.listAllSkillsUpdate[i].categorie = categorie;
+          this.listAllSkillsUpdate[i].index = index;
+          return;
+        }
+      }
+      this.listAllSkillsUpdate.push({skills: '', categorie: categorie, index: index});
+    }
+  }
+
+  onChangeSkill($event: any, index: number) {
+    if ($event.target.value == '') {
+      return;
+    }
+    let skill = $event.target.value;
+    if (this.listAllSkillsUpdate[0].skills == "") {
+      this.listAllSkillsUpdate[0].skills = skill;
+      this.listAllSkillsUpdate[0].index = index;
+    } else {
+      for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+        if (this.listAllSkillsUpdate[i].index == index) {
+          this.listAllSkillsUpdate[i].skills = skill;
+          this.listAllSkillsUpdate[i].index = index;
+          return;
+        }
+      }
+      this.listAllSkillsUpdate.push({skills: skill, categorie: '', index: index});
     }
   }
 }

@@ -27,12 +27,10 @@ h2 {
   color: #cccccc;
 }
 
-
-
 /* STRUCTURE */
 
 .wrapper {
-  margin-top: 5%;
+  margin-top: 2%;
   display: flex;
   align-items: center;
   flex-direction: column;
