@@ -38,21 +38,37 @@
             </div>
             <br>
             <div *ngIf="displaySkillsListBool">
-              <ul class="list-group d-flex">
-                <li class="list-group-item" *ngFor="let skill of skills">
+              <ul class="list-group d-flex" *ngIf="!modificationSkillsBool">
+                <li class="list-group-item" *ngFor="let skill of listAllSkills">
                   <span class="float-lg-start">{{skill.skills}}</span>
                   <span class="float-end">{{skill.categorie}}</span>
                 </li>
               </ul>
               <div *ngIf="!modificationSkillsBool" class="text-center">
                 <br>
-                <input type="submit" value="Modifier" (click)="modificationSkills()" *ngIf='samePeople'>
+                <div class="d-flex flex-row justify-content-center">
+                  <input type="submit" value="Ajouter" (click)="modificationSkills()" *ngIf='samePeople'>
+                  <input style="margin-left: 3% " type="submit" value="Modifier" (click)="modificationSkills()" *ngIf='samePeople'>
+                </div>
+                <br>
               </div>
-              <br>
-              <div *ngIf="modificationSkillsBool" class="text-center">
-                <input type="submit" value="Enregistrer"
-                       (click)="updateSkills()">
-              </div>
+              <ul class="list-group d-flex" *ngIf="modificationSkillsBool">
+                <li class="list-group-item" *ngFor="let skill of listAllSkills; let index = index">
+                  <input (change)="onChangeSkill($event,index)" type="text" class="float-lg-start"
+                         value="{{skill.skills}}">
+                  <select (change)="onChangeCategorie($event,index)" class="fadeIn second float-end">
+                    <option value=""></option>
+                    <option *ngFor="let elem of listAllCategories">{{elem}}</option>
+                  </select>
+                </li>
+                <br>
+                <div *ngIf="modificationSkillsBool" class="text-center">
+                  <input type="submit" value="Enregistrer"
+                         (click)="updateSkills()">
+                </div>
+                <br>
+              </ul>
+
             </div>
             <div class="card-body" *ngIf="displayInformationsBool">
               <div class="row">
