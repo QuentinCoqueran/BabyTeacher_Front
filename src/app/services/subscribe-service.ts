@@ -13,6 +13,8 @@ export class SubscribeService {
 
   private urlSubscribe = `${environment.apiUrl}/auth/subscribe`;
   private urlUpdateBabysitter = `${environment.apiUrl}/auth/updateBabysitter`;
+  private urlUpdateSkillsBabysitter = `${environment.apiUrl}/auth/updateSkillsBabysitter`;
+  private urlDelteSkillsBabysitter = `${environment.apiUrl}/auth/deleteSkillsBabysitter`;
   private urlUpdateUser = `${environment.apiUrl}/auth/updateUser`;
   private urlGetAllCategories = `${environment.apiUrl}/categorie/getAllCategories`;
 
@@ -23,14 +25,24 @@ export class SubscribeService {
     return this.http.post<ResponseUser>(this.urlSubscribe, user);
   }
 
-  updateBabysitter(updateBabysitter: UpdateBabysitter): Observable<boolean> {
+  insertBabysitter(updateBabysitter: UpdateBabysitter): Observable<boolean> {
     return this.http.post<boolean>(this.urlUpdateBabysitter, updateBabysitter);
   }
+
+  updateSkillsBabysitter(updateBabysitter: UpdateBabysitter): Observable<boolean> {
+    return this.http.post<boolean>(this.urlUpdateSkillsBabysitter, updateBabysitter);
+  }
+
   updateUser(updateUser: UserSubscribe): Observable<boolean> {
     return this.http.post<boolean>(this.urlUpdateUser, updateUser);
   }
+
   initCategories(): Observable<any> {
     return this.http.get<any>(this.urlGetAllCategories);
+  }
+
+  deleteSkill(id: number) {
+    return this.http.delete(this.urlDelteSkillsBabysitter + "/" + id);
   }
 }
 
