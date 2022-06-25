@@ -1,3 +1,8 @@
+<div class="spinner" ng-show="loading" *ngIf="loading">
+  <img src="http://w3lessons.info/demo/jquery-preloader/ajax-loader.gif"/>
+</div>
+
+
 <div class="container">
   <div class="main-body">
     <p *ngIf="returnError">
@@ -28,98 +33,159 @@
       </div>
       <div class="col-md-8">
         <div class="card mb-3">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-3" *ngIf="!modificationUserBool">
-                <h6 class="mb-0">Nom Complet</h6>
-              </div>
-              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
-                {{user['name'].charAt(0).toUpperCase() + user['name'].substr(1)}} {{user['lastname'].toUpperCase()}}
-              </div>
-              <div class="col-sm-3" *ngIf="modificationUserBool">
-                <h6 class="mb-0">Prenom</h6>
-              </div>
-              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
-                <input [(ngModel)]="user['name']">
-              </div>
+          <div>
+            <br>
+            <div class="d-flex flex-row justify-content-around">
+              <input type="submit" value="Informations" (click)="displayInformations()"/>
+              <input type="submit" value="Liste des compétences" (click)="displaySkillsList()"
+                     *ngIf="user['role'] == 'babysitter'"/>
+              <input type="submit" value="Agenda" (click)="displayAgenda()" *ngIf="user['role'] == 'babysitter'"/>
             </div>
-            <hr *ngIf="modificationUserBool">
-            <div class="row">
-              <div class="col-sm-3" *ngIf="modificationUserBool">
-                <h6 class="mb-0">Nom</h6>
+            <br>
+            <div *ngIf="displaySkillsListBool">
+              <ul class="list-group d-flex" *ngIf="!modificationSkillsBool">
+                <li class="list-group-item" *ngFor="let skill of listAllSkills">
+                  <span class="float-lg-start">{{skill.skill}}</span>
+                  <span class="float-end">{{skill.category}}</span>
+                </li>
+              </ul>
+              <div *ngIf="addSkillBool">
+                <input (change)="onChangeSkill($event,-1,-1)" type="text" class="float-lg-start">
+                <select (change)="onChangeCategorie($event,-1,-1)" class="fadeIn second float-end">
+                  <option value=""></option>
+                  <option *ngFor="let elem of listAllCategories">{{elem}}</option>
+                </select>
               </div>
-              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
-                <input [(ngModel)]="user['lastname']">
+              <div *ngIf="!modificationSkillsBool && !addSkillBool" class="text-center">
+                <br>
+                <div class="d-flex flex-row justify-content-center">
+                  <input type="submit" value="Ajouter" (click)="addSkill()" *ngIf='samePeople'>
+                  <input style="margin-left: 3% " type="submit" value="Modifier" (click)="modificationSkills()"
+                         *ngIf='samePeople'>
+                </div>
               </div>
+              <ul class="list-group d-flex" *ngIf="modificationSkillsBool && !addSkillBool">
+                <li class="list-group-item" *ngFor="let skill of listAllSkills; let index = index">
+                  <input (change)="onChangeSkill($event,index,skill.id)" type="text" class="float-lg-start"
+                         value="{{skill.skill}}">
+                  <i class="fa fa-trash float-end" aria-hidden="true" (click)="deleteSkill(index,skill.id)"
+                     *ngIf='samePeople' style="margin-left: 2%"></i>
+                  <select (change)="onChangeCategorie($event,index,skill.id)" class="float-end">
+                    <option value=""></option>
+                    <option *ngFor="let elem of listAllCategories">{{elem}}</option>
+                  </select>
+                </li>
+                <br>
+              </ul>
+              <div *ngIf="modificationSkillsBool" class="justify-content-center d-flex flex-row">
+                <input type="submit" value="Enregistrer"
+                       (click)="updateSkills()">
+                <input type="submit" value="Annuler" style="margin-left: 2%"
+                       (click)="cancel()">
+              </div>
+              <div *ngIf="addSkillBool" class="text-center" style="margin-top: 5%">
+                <input type="submit" value="Enregistrer"
+                       (click)="insertSkills()">
+                <input type="submit" value="Annuler" style="margin-left: 2%"
+                       (click)="cancel()">
+              </div>
+              <br>
             </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <h6 class="mb-0">Email</h6>
+            <div class="card-body" *ngIf="displayInformationsBool">
+              <div class="row">
+                <div class="col-sm-3" *ngIf="!modificationUserBool">
+                  <h6 class="mb-0">Nom Complet</h6>
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                  {{user['name'].charAt(0).toUpperCase() + user['name'].substr(1)}} {{user['lastname'].toUpperCase()}}
+                </div>
+                <div class="col-sm-3" *ngIf="modificationUserBool">
+                  <h6 class="mb-0">Prenom</h6>
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                  <input [(ngModel)]="user['name']">
+                </div>
               </div>
-              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
-                {{user['email']}}
+              <hr *ngIf="modificationUserBool">
+              <div class="row">
+                <div class="col-sm-3" *ngIf="modificationUserBool">
+                  <h6 class="mb-0">Nom</h6>
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                  <input [(ngModel)]="user['lastname']">
+                </div>
               </div>
-              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
-                <input [(ngModel)]="user['email']">
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">Email</h6>
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                  {{user['email']}}
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                  <input [(ngModel)]="user['email']">
+                </div>
               </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <h6 class="mb-0">Sexe</h6>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">Sexe</h6>
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                  {{sexeUser}}
+                </div>
+                <div class="btn-group w-25 " role="group" ngbRadioGroup name="radioBasic" [ngModel]="sexe"
+                     *ngIf="modificationUserBool">
+                  <label ngbButtonLabel class="btn-primary">
+                    <input ngbButton type="radio" class="btn-check" value="1" #homme (click)="modifySexe(homme.value)">
+                    Homme
+                  </label>
+                  <label ngbButtonLabel class="btn-primary ">
+                    <input ngbButton type="radio" class="btn-check " value="2" #femme
+                           (click)="modifySexe(femme.value)"> Femme
+                  </label>
+                </div>
               </div>
-              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
-                {{sexeUser}}
-              </div>
-              <div class="btn-group w-25 " role="group" ngbRadioGroup name="radioBasic" [ngModel]="sexe"
-                   *ngIf="modificationUserBool">
-                <label ngbButtonLabel class="btn-primary">
-                  <input ngbButton type="radio" class="btn-check" value="1" #homme (click)="modifySexe(homme.value)">
-                  Homme
-                </label>
-                <label ngbButtonLabel class="btn-primary ">
-                  <input ngbButton type="radio" class="btn-check " value="2" #femme
-                         (click)="modifySexe(femme.value)"> Femme
-                </label>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <h6 class="mb-0">Age</h6>
-              </div>
-              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
-                {{user['age']}}
-              </div>
-              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
-                <input [(ngModel)]="user['age']" type="number" placeholder="Age" min="0" max="100" oninput="this.value = this.value.replace(/[^0-9.]/g, '');
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">Age</h6>
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                  {{user['age']}}
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+                  <input [(ngModel)]="user['age']" type="number" placeholder="Age" min="0" max="100" oninput="this.value = this.value.replace(/[^0-9.]/g, '');
        this.value = this.value.replace(/^(?!(?:\d{1,2}|100)$)[0-9]\d+$/,100);">
+                </div>
               </div>
-            </div>
-            <hr>
-            <div class="row" *ngIf="modificationUserBool">
-              <div class="col-sm-3">
-                <h6 class="mb-0">Description <span class="text-info">{{lengthTextAreaNumber}}
-                  /100</span></h6>
-              </div>
-              <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
-                {{user['age']}}
-              </div>
-              <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
+              <hr>
+              <div class="row" *ngIf="modificationUserBool">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">Description <span class="text-info">{{lengthTextAreaNumber}}
+                    /100</span></h6>
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="!modificationUserBool">
+                  {{user['age']}}
+                </div>
+                <div class="col-sm-9 text-secondary" *ngIf="modificationUserBool">
                 <textarea [(ngModel)]="user['description']" #box type="text" id="form7"
                           class="fadeIn second  form-control" maxlength="100"
                           (keyup)="onKeyUpTextArea(box)"></textarea>
+                </div>
               </div>
-            </div>
-            <hr *ngIf="modificationUserBool">
-            <div class="row">
-              <div *ngIf="!modificationUserBool">
-                <input type="submit" value="Modifier" (click)="modificationUser()" *ngIf='samePeople'>
-              </div>
-              <div *ngIf="modificationUserBool">
-                <input type="submit" value="Enregistrer"
-                       (click)="updateUser()">
+              <hr *ngIf="modificationUserBool">
+              <div class="row">
+                <div *ngIf="!modificationUserBool" class="text-center">
+                  <input type="submit" value="Modifier" (click)="modificationUser()" *ngIf='samePeople'>
+                </div>
+                <div *ngIf="modificationUserBool" class="d-flex flex-row justify-content-center">
+                  <input type="submit" value="Enregistrer"
+                         (click)="updateUser()">
+                  <input type="submit" value="Annuler" style="margin-left: 2%"
+                         (click)="cancel()">
+                </div>
               </div>
             </div>
           </div>

@@ -133,7 +133,7 @@ export class FirstConnectionBabysitterComponent implements OnInit {
     this.updateBabysitter.description = box;
     this.updateBabysitter.photo = this.pictureProfile;
     this.updateBabysitter.arraySkill = this.listUserCompetences;
-    this.subscribeService.updateBabysitter(this.updateBabysitter).subscribe(
+    this.subscribeService.insertBabysitter(this.updateBabysitter).subscribe(
       (data: any) => {
         //navigate to the next page
         if (data.response) {
@@ -149,6 +149,7 @@ export class FirstConnectionBabysitterComponent implements OnInit {
   }
 
   private initCategories() {
+    this.listAllCategories = [];
     this.subscribeService.initCategories().subscribe(
       (data: any) => {
         for (let elem of data.response) {
