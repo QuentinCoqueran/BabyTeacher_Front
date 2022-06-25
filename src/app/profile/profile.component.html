@@ -1,3 +1,8 @@
+<div class="spinner" ng-show="loading" *ngIf="loading">
+  <img src="http://w3lessons.info/demo/jquery-preloader/ajax-loader.gif"/>
+</div>
+
+
 <div class="container">
   <div class="main-body">
     <p *ngIf="returnError">
@@ -40,35 +45,51 @@
             <div *ngIf="displaySkillsListBool">
               <ul class="list-group d-flex" *ngIf="!modificationSkillsBool">
                 <li class="list-group-item" *ngFor="let skill of listAllSkills">
-                  <span class="float-lg-start">{{skill.skills}}</span>
-                  <span class="float-end">{{skill.categorie}}</span>
+                  <span class="float-lg-start">{{skill.skill}}</span>
+                  <span class="float-end">{{skill.category}}</span>
                 </li>
               </ul>
-              <div *ngIf="!modificationSkillsBool" class="text-center">
+              <div *ngIf="addSkillBool">
+                <input (change)="onChangeSkill($event,-1,-1)" type="text" class="float-lg-start">
+                <select (change)="onChangeCategorie($event,-1,-1)" class="fadeIn second float-end">
+                  <option value=""></option>
+                  <option *ngFor="let elem of listAllCategories">{{elem}}</option>
+                </select>
+              </div>
+              <div *ngIf="!modificationSkillsBool && !addSkillBool" class="text-center">
                 <br>
                 <div class="d-flex flex-row justify-content-center">
-                  <input type="submit" value="Ajouter" (click)="modificationSkills()" *ngIf='samePeople'>
-                  <input style="margin-left: 3% " type="submit" value="Modifier" (click)="modificationSkills()" *ngIf='samePeople'>
+                  <input type="submit" value="Ajouter" (click)="addSkill()" *ngIf='samePeople'>
+                  <input style="margin-left: 3% " type="submit" value="Modifier" (click)="modificationSkills()"
+                         *ngIf='samePeople'>
                 </div>
-                <br>
               </div>
-              <ul class="list-group d-flex" *ngIf="modificationSkillsBool">
+              <ul class="list-group d-flex" *ngIf="modificationSkillsBool && !addSkillBool">
                 <li class="list-group-item" *ngFor="let skill of listAllSkills; let index = index">
-                  <input (change)="onChangeSkill($event,index)" type="text" class="float-lg-start"
-                         value="{{skill.skills}}">
-                  <select (change)="onChangeCategorie($event,index)" class="fadeIn second float-end">
+                  <input (change)="onChangeSkill($event,index,skill.id)" type="text" class="float-lg-start"
+                         value="{{skill.skill}}">
+                  <i class="fa fa-trash float-end" aria-hidden="true" (click)="deleteSkill(index,skill.id)"
+                     *ngIf='samePeople' style="margin-left: 2%"></i>
+                  <select (change)="onChangeCategorie($event,index,skill.id)" class="float-end">
                     <option value=""></option>
                     <option *ngFor="let elem of listAllCategories">{{elem}}</option>
                   </select>
                 </li>
                 <br>
-                <div *ngIf="modificationSkillsBool" class="text-center">
-                  <input type="submit" value="Enregistrer"
-                         (click)="updateSkills()">
-                </div>
-                <br>
               </ul>
-
+              <div *ngIf="modificationSkillsBool" class="justify-content-center d-flex flex-row">
+                <input type="submit" value="Enregistrer"
+                       (click)="updateSkills()">
+                <input type="submit" value="Annuler" style="margin-left: 2%"
+                       (click)="cancel()">
+              </div>
+              <div *ngIf="addSkillBool" class="text-center" style="margin-top: 5%">
+                <input type="submit" value="Enregistrer"
+                       (click)="insertSkills()">
+                <input type="submit" value="Annuler" style="margin-left: 2%"
+                       (click)="cancel()">
+              </div>
+              <br>
             </div>
             <div class="card-body" *ngIf="displayInformationsBool">
               <div class="row">
@@ -159,9 +180,11 @@
                 <div *ngIf="!modificationUserBool" class="text-center">
                   <input type="submit" value="Modifier" (click)="modificationUser()" *ngIf='samePeople'>
                 </div>
-                <div *ngIf="modificationUserBool" class="text-center">
+                <div *ngIf="modificationUserBool" class="d-flex flex-row justify-content-center">
                   <input type="submit" value="Enregistrer"
                          (click)="updateUser()">
+                  <input type="submit" value="Annuler" style="margin-left: 2%"
+                         (click)="cancel()">
                 </div>
               </div>
             </div>

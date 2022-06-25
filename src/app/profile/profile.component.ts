@@ -3,6 +3,7 @@ import {ConnexionService} from "../services/connexion.service";
 import {UserSubscribe} from "../models/UserSubscribe";
 import {SubscribeService} from "../services/subscribe-service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {UpdateBabysitter} from "../models/UpdateBabysitter";
 
 @Component({
   selector: 'app-profile',
@@ -26,22 +27,28 @@ export class ProfileComponent implements OnInit {
   public displayInformationsBool: boolean = false;
   public modificationUserBool: boolean = false;
   public modificationSkillsBool: boolean = false;
+  public addSkillBool: boolean = false;
   public listAllCategories: string[] = [];
-  public listAllSkills: [{ skills: string, categorie: string }] = [{skills: '', categorie: ''}];
-  public listAllSkillsUpdate: [{ skills: string, categorie: string, index: number }] = [{
-    skills: '',
-    categorie: '',
+  public listAllSkills: [{ category: string, id: number, skill: string }] = [{skill: '', id: -1, category: ''}];
+  public listAllSkillsTmp: [{ category: string, id: number, skill: string }] = [{skill: '', id: -1, category: ''}];
+  updateBabysitter: UpdateBabysitter = new UpdateBabysitter();
+  public listAllSkillsUpdate: [{ skill: string, id: number, category: string, index: number }] = [{
+    skill: '',
+    id: -1,
+    category: '',
     index: 0
   }];
   Object = Object;
   pictureProfile: string = "../assets/avatar.png";
   private categorySelected: string;
+  loading: boolean = false;
 
   constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router) {
   }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(async params => {
+      this.loading = true;
       this.loginParam = params['login'];
       if (!this.loginParam) {
         await this.router.navigate(['/login']);
@@ -50,6 +57,7 @@ export class ProfileComponent implements OnInit {
       await this.initUserByLogin()
       await this.initUserByToken();
       this.initSkills();
+      this.loading = false;
     });
   }
 
@@ -196,15 +204,23 @@ export class ProfileComponent implements OnInit {
   }
 
   private initSkills() {
-    this.listAllSkills = [{skills: '', categorie: ''}];
+    this.listAllSkills = [{skill: '', id: -1, category: ''}];
     this.authService.getSkills(this.user.login).then(
       (data: any) => {
         if (data.response) {
           for (let i = 0; i < data.response.length; i++) {
-            if (this.listAllSkills[0].skills == '') {
-              this.listAllSkills[0] = {skills: data.response[i]["name"], categorie: data.response[i]["test"]};
+            if (this.listAllSkills[0].skill == '') {
+              this.listAllSkills[0] = {
+                skill: data.response[i]["name"],
+                id: data.response[i]["id"],
+                category: data.response[i]["test"]
+              };
             } else {
-              this.listAllSkills.push({skills: data.response[i]["name"], categorie: data.response[i]["test"]});
+              this.listAllSkills.push({
+                skill: data.response[i]["name"],
+                id: data.response[i]["id"],
+                category: data.response[i]["test"]
+              });
             }
           }
         } else {
@@ -233,21 +249,90 @@ export class ProfileComponent implements OnInit {
     this.displayAgendaBool = false;
   }
 
+  insertSkills() {
+    if (this.addSkillBool) {
+      if (this.listAllSkills.length >= 5) {
+        this.errorMessage = "Vous avez atteint le nombre maximum de compétences";
+        this.returnError = true;
+        return;
+      } else if (this.listAllSkillsUpdate[0].skill.length > 20) {
+        this.errorMessage = "Nom de compétence trop long max 20 caractères";
+        this.returnError = true;
+        return;
+      } else if (this.listAllSkillsUpdate[0].skill.length == 0) {
+        this.errorMessage = "Veuillez entrer un nom de compétence";
+        this.returnError = true;
+        return;
+      } else if (this.listAllSkillsUpdate[0].category.length == 0) {
+        this.errorMessage = "Veuillez entrer une catégorie";
+        this.returnError = true;
+        return;
+      }
+      this.listAllSkillsTmp = this.listAllSkillsUpdate;
+      this.listAllSkills.push(this.listAllSkillsTmp[0])
+      this.modificationSkillsBool = false;
+      this.addSkillBool = false;
+      this.listAllSkillsUpdate = [{skill: '', id: -1, category: '', index: 0}];
+      this.updateBabysitter.id = this.userId;
+      this.updateBabysitter.arraySkill = this.listAllSkillsTmp;
+      this.subscribeService.insertBabysitter(this.updateBabysitter).subscribe(
+        (data: any) => {
+          //navigate to the next page
+          if (data.response) {
+            this.modificationSkillsBool = false;
+            this.addSkillBool = false;
+          } else {
+            this.returnError = true;
+            this.errorMessage = data.message;
+          }
+        }, (error: any) => {
+          this.returnError = true;
+          this.errorMessage = "Une erreur est survenue " + error;
+        });
+    }
+  }
+
   updateSkills() {
     if (this.modificationSkillsBool) {
       for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
-        if (this.listAllSkillsUpdate[i].skills != '') {
-          this.listAllSkills[this.listAllSkillsUpdate[i].index].skills = this.listAllSkillsUpdate[i].skills;
+        if (this.listAllSkillsUpdate[i].skill != '') {
+          this.listAllSkills[this.listAllSkillsUpdate[i].index].skill = this.listAllSkillsUpdate[i].skill;
+          this.listAllSkills[this.listAllSkillsUpdate[i].index].id = this.listAllSkillsUpdate[i].id;
         }
-        if (this.listAllSkillsUpdate[i].categorie != '') {
-          this.listAllSkills[this.listAllSkillsUpdate[i].index].categorie = this.listAllSkillsUpdate[i].categorie;
+        if (this.listAllSkillsUpdate[i].category != '') {
+          this.listAllSkills[this.listAllSkillsUpdate[i].index].category = this.listAllSkillsUpdate[i].category;
+          this.listAllSkills[this.listAllSkillsUpdate[i].index].id = this.listAllSkillsUpdate[i].id;
         }
       }
-    }
-    this.modificationSkillsBool = !this.modificationSkillsBool;
-    console.log(this.listAllSkills);
-  }
+      for (let i = 0; i < this.listAllSkills.length; i++) {
+        if (this.countInArray(this.listAllSkills, this.listAllSkills[i].skill) > 1) {
+          this.errorMessage = "Vous avez déjà une compétence portant ce nom";
+          this.returnError = true;
+          return;
+        }
+      }
+      this.modificationSkillsBool = false;
+      this.addSkillBool = false;
+      this.listAllSkillsUpdate = [{skill: '', id: -1, category: '', index: 0}];
+      this.updateBabysitter.id = this.userId;
+      this.updateBabysitter.arraySkill = this.listAllSkills;
 
+      this.subscribeService.updateSkillsBabysitter(this.updateBabysitter).subscribe(
+        (data: any) => {
+          //navigate to the next page
+          if (data.response) {
+            this.modificationSkillsBool = false;
+            this.addSkillBool = false;
+          } else {
+            this.returnError = true;
+            this.errorMessage = data.message;
+          }
+        }, (error: any) => {
+          this.returnError = true;
+          this.errorMessage = "Une erreur est survenue " + error;
+        });
+    }
+  }
 
   private initCategories() {
     this.listAllCategories = [];
@@ -262,43 +347,127 @@ export class ProfileComponent implements OnInit {
       });
   }
 
-  onChangeCategorie($event: any, index: number) {
+  onChangeCategorie($event: any, index: number, id: number) {
     if ($event.target.value == '') {
       return;
     }
     let categorie = $event.target.value;
-    if (this.listAllSkillsUpdate[0].skills == "") {
-      this.listAllSkillsUpdate[0].categorie = categorie;
-      this.listAllSkillsUpdate[0].index = index;
-    } else {
-      for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
-        if (this.listAllSkillsUpdate[i].index == index) {
-          this.listAllSkillsUpdate[i].categorie = categorie;
-          this.listAllSkillsUpdate[i].index = index;
-          return;
+    if (this.modificationSkillsBool && index != -1) {
+      if (this.listAllSkillsUpdate[0].skill == "" && this.listAllSkillsUpdate[0].category == "") {
+        this.listAllSkillsUpdate[0].category = categorie;
+        this.listAllSkillsUpdate[0].index = index;
+        this.listAllSkillsUpdate[0].id = id;
+      } else {
+        for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+          if (this.listAllSkillsUpdate[i].index == index) {
+            this.listAllSkillsUpdate[i].category = categorie;
+            this.listAllSkillsUpdate[i].id = id;
+            this.listAllSkillsUpdate[i].index = index;
+            return;
+          }
         }
+        this.listAllSkillsUpdate.push({skill: '', id: id, category: categorie, index: index});
       }
-      this.listAllSkillsUpdate.push({skills: '', categorie: categorie, index: index});
+    }
+
+    if (this.addSkillBool && index == -1) {
+      if (this.listAllSkillsUpdate[0].skill == "") {
+        this.listAllSkillsUpdate[0].category = categorie;
+        this.listAllSkillsUpdate[0].id = id;
+        this.listAllSkillsUpdate[0].index = index;
+      } else {
+        for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+          if (this.listAllSkillsUpdate[i].index == index) {
+            this.listAllSkillsUpdate[i].category = categorie;
+            this.listAllSkillsUpdate[i].id = id;
+            this.listAllSkillsUpdate[i].index = -1;
+            return;
+          }
+        }
+        this.listAllSkillsUpdate.push({skill: '', id: id, category: categorie, index: -1});
+      }
     }
   }
 
-  onChangeSkill($event: any, index: number) {
+  onChangeSkill($event: any, index: number, id: number) {
     if ($event.target.value == '') {
       return;
     }
     let skill = $event.target.value;
-    if (this.listAllSkillsUpdate[0].skills == "") {
-      this.listAllSkillsUpdate[0].skills = skill;
-      this.listAllSkillsUpdate[0].index = index;
-    } else {
-      for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
-        if (this.listAllSkillsUpdate[i].index == index) {
-          this.listAllSkillsUpdate[i].skills = skill;
-          this.listAllSkillsUpdate[i].index = index;
-          return;
+    if (this.modificationSkillsBool && index != -1) {
+      if (this.listAllSkillsUpdate[0].skill == "") {
+        this.listAllSkillsUpdate[0].skill = skill;
+        this.listAllSkillsUpdate[0].id = id;
+        this.listAllSkillsUpdate[0].index = index;
+      } else {
+        for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+          if (this.listAllSkillsUpdate[i].index == index) {
+            this.listAllSkillsUpdate[i].skill = skill;
+            this.listAllSkillsUpdate[0].id = id;
+            this.listAllSkillsUpdate[i].index = index;
+            return;
+          }
         }
+        this.listAllSkillsUpdate.push({skill: skill, id: id, category: '', index: index});
       }
-      this.listAllSkillsUpdate.push({skills: skill, categorie: '', index: index});
     }
+    if (this.addSkillBool && index == -1) {
+      if (this.listAllSkillsUpdate[0].skill == "") {
+        this.listAllSkillsUpdate[0].skill = skill;
+        this.listAllSkillsUpdate[0].id = id;
+        this.listAllSkillsUpdate[0].index = index;
+      } else {
+        for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+          if (this.listAllSkillsUpdate[i].index == index) {
+            this.listAllSkillsUpdate[i].skill = skill;
+            this.listAllSkillsUpdate[0].id = id;
+            this.listAllSkillsUpdate[i].index = -1;
+            return;
+          }
+        }
+        this.listAllSkillsUpdate.push({skill: skill, id: id, category: '', index: -1});
+      }
+    }
+  }
+
+  countInArray(array: any, what: string) {
+    var count = 0;
+    for (var i = 0; i < array.length; i++) {
+      if (array[i].skill === what) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  async addSkill() {
+    this.addSkillBool = !this.addSkillBool;
+    this.initCategories();
+  }
+
+  cancel() {
+    this.modificationSkillsBool = false;
+    this.modificationUserBool = false;
+    this.addSkillBool = false;
+    this.listAllSkillsUpdate = [{skill: '', id: -1, category: '', index: 0}];
+  }
+
+  deleteSkill(index: number, id: number) {
+    //supprimer la skill de la liste
+    this.listAllSkills.splice(index, 1);
+    //supprimer la skill de la liste update
+    for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+      if (this.listAllSkillsUpdate[i].id == id) {
+        this.listAllSkillsUpdate.splice(i, 1);
+        return;
+      }
+    }
+    //suprimer le skill dans la base de données
+    this.subscribeService.deleteSkill(id).subscribe(
+      (data: any) => {
+      }, (error: any) => {
+        this.returnError = true;
+        this.errorMessage = "Une erreur est survenue " + error;
+      });
   }
 }
