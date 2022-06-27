@@ -10,6 +10,8 @@ import {SubscribeUserComponent} from "./subscribe-user/subscribe-user.component"
 import { FirstConnectionBabysitterComponent } from './first-connection-babysitter/first-connection-babysitter.component';
 import { ProfileComponent } from './profile/profile.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { MessageComponent } from './message/message.component';
+import {AuthGuard} from "./auth.guard";
 
 
 
@@ -21,6 +23,7 @@ import { NavbarComponent } from './navbar/navbar.component';
     FirstConnectionBabysitterComponent,
     ProfileComponent,
     NavbarComponent,
+    MessageComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,7 +32,7 @@ import { NavbarComponent } from './navbar/navbar.component';
     AppRoutingModule,
     FormsModule,
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

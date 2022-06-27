@@ -7,15 +7,16 @@ import {
 } from "./app/first-connection-babysitter/first-connection-babysitter.component";
 import {AuthGuard} from "./app/auth.guard";
 import {ProfileComponent} from "./app/profile/profile.component";
-
+import {MessageComponent} from "./app/message/message.component";
 
 
 const routes: Routes = [
   {path: 'login', component: ConnexionUserComponent},
   {path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: 'subscribe', component: SubscribeUserComponent},
-  {path: 'profile', component: ProfileComponent},
+  {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'first-connection-babysitter', component: FirstConnectionBabysitterComponent, canActivate: [AuthGuard]},
+  {path: 'message', component: MessageComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({
