@@ -4,7 +4,17 @@
 <div class="d-flex flex-row height-size m-3">
   <div id="div-list-messages" class=" bg-light">
     <ul class="list-group">
-      <li class="list-group-item list-group-item-action" *ngFor="let login of loginOther" (click)="moveSession(login)"><strong>{{login}}</strong></li>
+      <br>
+      <form class="form-inline d-flex flex-row">
+        <input #searchValue placeholder="Contacter..." id="typeahead-basic" type="text" class="form-control"
+               [ngbTypeahead]="search"/>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" (click)="moveSession(searchValue.value)">
+          Search
+        </button>
+      </form>
+      <br>
+      <li class="list-group-item list-group-item-action" *ngFor="let login of loginOther" (click)="moveSession(login)">
+        <strong>{{login}}</strong></li>
     </ul>
   </div>
   <div class="flex-column w-100">

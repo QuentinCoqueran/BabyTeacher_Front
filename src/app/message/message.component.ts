@@ -4,6 +4,7 @@ import {ConnexionService} from "../services/connexion.service";
 import {UserSubscribe} from "../models/UserSubscribe";
 import {MessageService} from "../services/message.service";
 import {Message} from "../models/Message";
+import {debounceTime, distinctUntilChanged, map, Observable, OperatorFunction} from "rxjs";
 
 @Component({
   selector: 'app-message',
@@ -26,9 +27,19 @@ export class MessageComponent implements OnInit {
   public sendMessageBool: boolean = false;
   public idSession: string = "";
   public loginOther: Array<any> = [];
+  public login: [string] = [""];
 
   constructor(private authService: ConnexionService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) {
   }
+
+  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map((term: string) => term.length < 2 ? []
+        : this.login.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+    )
+
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(async params => {
@@ -42,7 +53,8 @@ export class MessageComponent implements OnInit {
       await this.initUserByToken();
       await this.isMessageExist();
       await this.getAllMessage();
-      this.getAllSession();
+      await this.getAllSession();
+      await this.getAllUsers();
       this.loading = false;
     });
     this.getMessage();
@@ -202,11 +214,25 @@ export class MessageComponent implements OnInit {
     )
   }
 
+  private async getAllUsers() {
+    this.login = [""];
+    let userService = await this.authService.getAllUsers();
+    if (userService) {
+      for (let i = 0; i < Object.keys(userService).length; i++) {
+        if (this.login[0] == "") {
+          this.login[0] = Object.values(userService)[i]["login"];
+        } else {
+          this.login.push(Object.values(userService)[i]["login"]);
+        }
+      }
+    }
+  }
+
   moveSession(login: string) {
-    this.router.navigate(['/message'], { queryParams: { login: login } });
+    this.router.navigate(['/message'], {queryParams: {login: login}});
   }
 
   moveToProfil(login: string) {
-    this.router.navigate(['/profile'], { queryParams: { login: login } });
+    this.router.navigate(['/profile'], {queryParams: {login: login}});
   }
 }
