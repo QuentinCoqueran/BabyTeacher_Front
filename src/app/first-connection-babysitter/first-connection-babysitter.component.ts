@@ -3,7 +3,7 @@ import {ConnexionService} from "../services/connexion.service";
 import {UserSubscribe} from "../models/UserSubscribe";
 import {UpdateBabysitter} from "../models/UpdateBabysitter";
 import {SubscribeService} from "../services/subscribe-service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 
 
 @Component({
@@ -29,7 +29,7 @@ export class FirstConnectionBabysitterComponent implements OnInit {
   @ViewChild("skills") skills: ElementRef;
 
 
-  constructor(private authService: ConnexionService, private subscribeService: SubscribeService, private router: Router) {
+  constructor(private route: ActivatedRoute, private authService: ConnexionService, private subscribeService: SubscribeService, private router: Router) {
   }
 
 
@@ -133,11 +133,13 @@ export class FirstConnectionBabysitterComponent implements OnInit {
     this.updateBabysitter.description = box;
     this.updateBabysitter.photo = this.pictureProfile;
     this.updateBabysitter.arraySkill = this.listUserCompetences;
+    console.log("tata");
     this.subscribeService.insertBabysitter(this.updateBabysitter).subscribe(
       (data: any) => {
         //navigate to the next page
         if (data.response) {
-          this.router.navigate(['/profile']);
+
+          this.router.navigate(['/profile'], { queryParams: { login: this.user.login } });
         } else {
           this.returnError = true;
           this.errorMessage = data.message;

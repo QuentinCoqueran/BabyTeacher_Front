@@ -1,0 +1,80 @@
+
+#div-list-messagest, #div-chat {
+  overflow-y: scroll;
+}
+
+#div-chat {
+  height: 65vh;
+  position: relative;
+}
+
+#div-list-messages {
+  width: 25%;
+}
+
+#div-list-messages::-webkit-scrollbar, #div-chat::-webkit-scrollbar {
+  display: none;
+}
+
+#div-list-messages, #div-login {
+  border: #5fbae9 2.5px solid;
+}
+#div-login{
+  border-left: none;
+}
+
+
+.sub_div {
+  position: absolute;
+  bottom: 0;
+}
+
+.spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fefefe;
+  z-index: 99;
+  height: 100%;
+  opacity: .8;
+}
+
+.spinner img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -32px; /* -1 * image width / 2 */
+  margin-top: -32px; /* -1 * image height / 2 */
+  display: block;
+}
+
+.my-msg {
+  background-color: #DCDCDC;
+}
+
+.this-msg {
+  background-color: #5fbae9;
+  color: white;
+}
+
+.msg {
+  padding: 10px;
+  text-align: center;
+}
+
+.float-right {
+  float: right;
+  margin-right: 3%;
+}
+
+.float-left {
+  float: left;
+  margin-left: 3%;
+}
+.list-group-item-action:hover {
+  color: #5fbae9;
+  background-color: #fefefe;
+  cursor: pointer;
+}

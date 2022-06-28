@@ -1,8 +1,6 @@
 <div class="spinner" ng-show="loading" *ngIf="loading">
   <img src="http://w3lessons.info/demo/jquery-preloader/ajax-loader.gif"/>
 </div>
-
-
 <div class="container">
   <div class="main-body">
     <p *ngIf="returnError">
@@ -22,7 +20,8 @@
                 <h4>@{{user['login']}}</h4>
                 <p class="text-secondary mb-1">{{user['role']}}</p>
                 <p class="text-muted font-size-sm" *ngIf="user['description'] != 'null'">{{user['description']}}</p>
-                <input type="submit" value="Message" *ngIf='!samePeople'>
+                <input type="submit" value="Message" [routerLink]="['/message']"
+                       [queryParams]="{login:user['login']}" *ngIf='!samePeople'>
               </div>
             </div>
           </div>

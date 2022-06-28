@@ -54,7 +54,7 @@ export class ProfileComponent implements OnInit {
         await this.router.navigate(['/login']);
         return;
       }
-      await this.initUserByLogin()
+      await this.initUserByLogin();
       await this.initUserByToken();
       this.initSkills();
       this.loading = false;
@@ -470,4 +470,5 @@ export class ProfileComponent implements OnInit {
         this.errorMessage = "Une erreur est survenue " + error;
       });
   }
+
 }
