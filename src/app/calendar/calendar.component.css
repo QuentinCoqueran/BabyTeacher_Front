@@ -1,0 +1,22 @@
+td{
+  border: 2px solid black;
+  text-align: center;
+  font-weight: bold;
+}
+th{
+  text-align: center;
+  width: 5%;
+}
+table{
+  table-layout: auto;
+  display: block;
+  overflow-y: scroll;
+  max-height:50vh ;
+}
+
+.bg-green{
+  background-color: #1e911e;
+}
+.bg-red{
+  background-color: #ab0808;
+}

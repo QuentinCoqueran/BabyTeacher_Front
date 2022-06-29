@@ -1,0 +1,28 @@
+<div>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Lundi</th>
+      <th scope="col">Mardi</th>
+      <th scope="col">Mercredi</th>
+      <th scope="col">Jeudi</th>
+      <th scope="col">Vendredi</th>
+      <th scope="col">Samedi</th>
+      <th scope="col">Dimanche</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let country of countries; index as i">
+      <th scope="row">{{ i }}H</th>
+      <td  [className]="(country._lundi == 'X') ? 'bg-green' : 'bg-red'"></td>
+      <td  [className]="(country._mardi == 'X') ? 'bg-green' : 'bg-red'"></td>
+      <td  [className]="(country._mercredi == 'X') ? 'bg-green' : 'bg-red'"></td>
+      <td  [className]="(country._jeudi == 'X') ? 'bg-green' : 'bg-red'"></td>
+      <td  [className]="(country._vendredi == 'X') ? 'bg-green' : 'bg-red'"></td>
+      <td  [className]="(country._samedi == 'X') ? 'bg-green' : 'bg-red'"></td>
+      <td  [className]="(country._dimanche == 'X') ? 'bg-green' : 'bg-red'"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>

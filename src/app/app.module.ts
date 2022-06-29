@@ -12,6 +12,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { MessageComponent } from './message/message.component';
 import {AuthGuard} from "./auth.guard";
+import { CalendarComponent } from './calendar/calendar.component';
 
 
 
@@ -24,6 +25,7 @@ import {AuthGuard} from "./auth.guard";
     ProfileComponent,
     NavbarComponent,
     MessageComponent,
+    CalendarComponent,
   ],
   imports: [
     BrowserModule,
