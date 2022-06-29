@@ -29,25 +29,18 @@ export class ConnexionUserComponent implements OnInit {
             if (res.response["token"] != undefined) {
               this.returnError = false;
               localStorage.setItem('token', res.response["token"]);
-
-              if (res.response["role"] === "parent") {
-                console.log(res.response["role"])
-              }
-
               if (res.response["role"] === "babysitter") {
                 if (res.response["firstConnection"]) {
-                  console.log("toto")
                   await this.router.navigate(['/first-connection-babysitter']);
                   return;
                 }
-                const queryParams: Params = {login: res.response["login"]};
-                await this.router.navigate(
-                  ['/profile'],
-                  {
-                    queryParams: queryParams,
-                  });
               }
-
+              const queryParams: Params = {login: res.response["login"]};
+              await this.router.navigate(
+                ['/profile'],
+                {
+                  queryParams: queryParams,
+                });
             } else {
               this.returnError = true;
             }

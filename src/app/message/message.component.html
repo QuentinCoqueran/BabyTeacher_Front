@@ -18,7 +18,7 @@
     </ul>
   </div>
   <div class="flex-column w-100">
-    <div id="div-login" class="bg-light p-3 d-flex flex-row">
+    <div id="div-login" class="bg-light p-3 d-flex flex-row" *ngIf="!inboxBool">
       <img [src]='pictureProfile' alt="Admin" class="rounded-circle"
            width="100">
       <div class="flex-column" style="margin-top: 1%; margin-left: 2%">
@@ -26,7 +26,7 @@
         <h6>{{user["role"]}}</h6>
       </div>
     </div>
-    <div id="div-chat" class="bg-light d-flex flex-column">
+    <div id="div-chat" class="bg-light d-flex flex-column" *ngIf="!inboxBool">
       <br>
       <div *ngFor="let message of messageArr">
         <div [className]="(message.userId == userIdByToken) ? 'float-right' : 'float-left'">
@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div class="input-group">
+    <div class="input-group" *ngIf="!inboxBool">
       <input [(ngModel)]="newMessage" (keyup)="$event.keyCode == 13 && sendMessage()" type="text"
              placeholder="Type a message" class="form-control  bg-white shadow-none ">
       <div class="input-group-append">
