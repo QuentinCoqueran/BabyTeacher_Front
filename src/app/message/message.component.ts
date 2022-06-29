@@ -28,6 +28,7 @@ export class MessageComponent implements OnInit {
   public idSession: string = "";
   public loginOther: Array<any> = [];
   public login: [string] = [""];
+  public inboxBool : boolean = false;
 
   constructor(private authService: ConnexionService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) {
   }
@@ -44,17 +45,26 @@ export class MessageComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(async params => {
       this.loading = true;
-      if (!params['login']) {
+      if (!params['login'] && !params['inbox']) {
         await this.router.navigate(['/login']);
         return;
       }
-      this.loginParam = params['login'];
-      await this.initUserByLogin();
-      await this.initUserByToken();
-      await this.isMessageExist();
-      await this.getAllMessage();
-      await this.getAllSession();
-      await this.getAllUsers();
+      if(params['login']){
+        this.inboxBool = false;
+        this.loginParam = params['login'];
+        await this.initUserByLogin();
+        await this.initUserByToken();
+        await this.isMessageExist();
+        await this.getAllMessage();
+        await this.getAllSession();
+        await this.getAllUsers();
+      }
+      if(params['inbox']){
+        this.inboxBool = true;
+        await this.initUserByToken();
+        await this.getAllSession();
+        await this.getAllUsers();
+      }
       this.loading = false;
     });
     this.getMessage();
