@@ -187,9 +187,64 @@
                 </div>
               </div>
             </div>
-            <div *ngIf="displayAgendaBool" style="height: 10vh">
+            <div *ngIf="displayAgendaBool && !addAvaibalityBool && !modificationAvaibalityBool" style="height: 10vh">
               <app-calendar></app-calendar>
+              <div class="d-flex flex-row justify-content-center">
+                <input type="submit" value="Ajouter" (click)="addAvaibality()" *ngIf='samePeople'>
+                <input style="margin-left: 3% " type="submit" value="Modifier" (click)="modificationAvailability()"
+                       *ngIf='samePeople'>
+              </div>
             </div>
+            <div *ngIf="displayAgendaBool && addAvaibalityBool && !modificationAvaibalityBool"
+                 style="height: 10vh; text-align: center">
+              <div class="d-flex flex-row justify-content-between">
+                <select (change)="onChangeDay($event,-1,-1)" class="float-end">
+                  <option value=""></option>
+                  <option *ngFor="let elem of listAllDay">{{elem}}</option>
+                </select>
+                <select (change)="onChangeHourStart($event,-1,-1)" class="float-end">
+                  <option value=""></option>
+                  <option *ngFor="let elem of listAllHour">{{elem}}</option>
+                </select>
+                <select (change)="onChangeHourEnd($event,-1,-1)" class="float-end">
+                  <option value=""></option>
+                  <option *ngFor="let elem of listAllHour">{{elem}}</option>
+                </select>
+              </div>
+              <br>
+              <input type="submit" value="Enregistrer" (click)="insertAvaibality()" *ngIf='samePeople'>
+              <input style="margin-left: 3% " type="submit" value="Annuler" (click)="cancel()" *ngIf='samePeople'>
+            </div>
+
+            <div *ngIf="displayAgendaBool && !addAvaibalityBool && modificationAvaibalityBool" style="height: 10vh">
+              <li class="list-group-item d-flex flex-column"
+                  *ngFor="let avaibality of listAllAvaibality; let index = index">
+                <p>Jour : {{avaibality.day}}, Heure début : {{avaibality.startHour}}H, Heure de
+                  fin {{avaibality.endHour}}H</p>
+                <div class="d-flex flex-row justify-content-between">
+                  <select (change)="onChangeDay($event,index,avaibality.id)" class="float-end">
+                    <option value=""></option>
+                    <option *ngFor="let elem of listAllDay">{{elem}}</option>
+                  </select>
+                  <select (change)="onChangeHourStart($event,index,avaibality.id)" class="float-end">
+                    <option value=""></option>
+                    <option *ngFor="let elem of listAllHour">{{elem}}</option>
+                  </select>
+                  <select (change)="onChangeHourEnd($event,index,avaibality.id)" class="float-end">
+                    <option value=""></option>
+                    <option *ngFor="let elem of listAllHour">{{elem}}</option>
+                  </select>
+                  <i class="fa fa-trash float-end" aria-hidden="true" (click)="deleteAvaibality(index,avaibality.id)"
+                     *ngIf='samePeople' style="margin-left: 2%"></i>
+                </div>
+              </li>
+              <br>
+              <div class="d-flex flex-row justify-content-center">
+                <input type="submit" value="Enregistrer" (click)="updateAvailability()" *ngIf='samePeople'>
+                <input style="margin-left: 3% " type="submit" value="Annuler" (click)="cancel()" *ngIf='samePeople'>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

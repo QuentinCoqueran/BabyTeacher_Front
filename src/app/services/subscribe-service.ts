@@ -5,6 +5,7 @@ import {environment} from 'src/environments/environment';
 import {ResponseUser} from "../models/ResponseUser";
 import {UserSubscribe} from "../models/UserSubscribe";
 import {UpdateBabysitter} from "../models/UpdateBabysitter";
+import {UpdateAvaibality} from "../models/UpdateAvaibality";
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,8 @@ export class SubscribeService {
     return this.http.post<boolean>(this.urlUpdateSkillsBabysitter, updateBabysitter);
   }
 
+
+
   updateUser(updateUser: UserSubscribe): Observable<boolean> {
     return this.http.post<boolean>(this.urlUpdateUser, updateUser);
   }
@@ -44,5 +47,7 @@ export class SubscribeService {
   deleteSkill(id: number) {
     return this.http.delete(this.urlDelteSkillsBabysitter + "/" + id);
   }
+
+
 }
 
