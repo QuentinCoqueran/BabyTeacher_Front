@@ -4,6 +4,8 @@ import {UserSubscribe} from "../models/UserSubscribe";
 import {SubscribeService} from "../services/subscribe-service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UpdateBabysitter} from "../models/UpdateBabysitter";
+import {AvailabilityService} from "../services/availability.service";
+import {UpdateAvaibality} from "../models/UpdateAvaibality";
 
 @Component({
   selector: 'app-profile',
@@ -28,10 +30,26 @@ export class ProfileComponent implements OnInit {
   public modificationUserBool: boolean = false;
   public modificationSkillsBool: boolean = false;
   public addSkillBool: boolean = false;
+  public addAvaibalityBool: boolean = false;
+  public modificationAvaibalityBool: boolean = false;
   public listAllCategories: string[] = [];
   public listAllSkills: [{ category: string, id: number, skill: string }] = [{skill: '', id: -1, category: ''}];
+  public listAllAvaibality: [{ id: number, day: string, startHour: number, endHour: number }] = [{
+    id: -1,
+    day: '',
+    startHour: -1,
+    endHour: -1
+  }];
+  public listAllAvaibalityUpdate: [{ day: string, id: number, startHour: number, endHour: number, index: number }] = [{
+    id: -1,
+    day: '',
+    startHour: -1,
+    endHour: -1,
+    index: 0
+  }];
   public listAllSkillsTmp: [{ category: string, id: number, skill: string }] = [{skill: '', id: -1, category: ''}];
   updateBabysitter: UpdateBabysitter = new UpdateBabysitter();
+  updateAvaibality: UpdateAvaibality = new UpdateAvaibality();
   public listAllSkillsUpdate: [{ skill: string, id: number, category: string, index: number }] = [{
     skill: '',
     id: -1,
@@ -42,8 +60,10 @@ export class ProfileComponent implements OnInit {
   pictureProfile: string = "../assets/avatar.png";
   private categorySelected: string;
   loading: boolean = false;
+  listAllDay = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+  listAllHour = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
-  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router) {
+  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private availableService: AvailabilityService) {
   }
 
   ngOnInit(): void {
@@ -56,7 +76,8 @@ export class ProfileComponent implements OnInit {
       }
       await this.initUserByLogin();
       await this.initUserByToken();
-      this.initSkills();
+      await this.initSkills();
+      await this.initAllAvaibality()
       this.loading = false;
     });
   }
@@ -268,6 +289,13 @@ export class ProfileComponent implements OnInit {
         this.returnError = true;
         return;
       }
+
+      if (this.countInArray(this.listAllSkills, this.listAllSkills[0].skill) > 1) {
+        this.errorMessage = "Vous avez déjà une compétence portant ce nom";
+        this.returnError = true;
+        return;
+      }
+
       this.listAllSkillsTmp = this.listAllSkillsUpdate;
       this.listAllSkills.push(this.listAllSkillsTmp[0])
       this.modificationSkillsBool = false;
@@ -295,6 +323,15 @@ export class ProfileComponent implements OnInit {
   updateSkills() {
     if (this.modificationSkillsBool) {
       for (let i = 0; i < this.listAllSkillsUpdate.length; i++) {
+        if (this.listAllSkillsUpdate.length >= 5) {
+          this.errorMessage = "Vous avez atteint le nombre maximum de compétences";
+          this.returnError = true;
+          return;
+        } else if (this.listAllSkillsUpdate[i].skill.length > 20) {
+          this.errorMessage = "Nom de compétence trop long max 20 caractères";
+          this.returnError = true;
+          return;
+        }
         if (this.listAllSkillsUpdate[i].skill != '') {
           this.listAllSkills[this.listAllSkillsUpdate[i].index].skill = this.listAllSkillsUpdate[i].skill;
           this.listAllSkills[this.listAllSkillsUpdate[i].index].id = this.listAllSkillsUpdate[i].id;
@@ -311,6 +348,7 @@ export class ProfileComponent implements OnInit {
           return;
         }
       }
+
       this.modificationSkillsBool = false;
       this.addSkillBool = false;
       this.listAllSkillsUpdate = [{skill: '', id: -1, category: '', index: 0}];
@@ -440,6 +478,16 @@ export class ProfileComponent implements OnInit {
     return count;
   }
 
+  countInArrayAvaibality(array: any, what: string) {
+    var count = 0;
+    for (var i = 0; i < array.length; i++) {
+      if (array[i].day === what) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   async addSkill() {
     this.addSkillBool = !this.addSkillBool;
     this.initCategories();
@@ -449,6 +497,8 @@ export class ProfileComponent implements OnInit {
     this.modificationSkillsBool = false;
     this.modificationUserBool = false;
     this.addSkillBool = false;
+    this.modificationAvaibalityBool = false;
+    this.addAvaibalityBool = false;
     this.listAllSkillsUpdate = [{skill: '', id: -1, category: '', index: 0}];
   }
 
@@ -471,4 +521,291 @@ export class ProfileComponent implements OnInit {
       });
   }
 
+  deleteAvaibality(index: number, id: number) {
+    //supprimer la skill de la liste
+    this.listAllAvaibality.splice(index, 1);
+    //supprimer la skill de la liste update
+    for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
+      if (this.listAllSkillsUpdate[i].id == id) {
+        this.listAllSkillsUpdate.splice(i, 1);
+        return;
+      }
+    }
+    //suprimer le skill dans la base de données
+    this.availableService.deleteAvaibality(id).subscribe(
+      (data: any) => {
+      }, (error: any) => {
+        this.returnError = true;
+        this.errorMessage = "Une erreur est survenue " + error;
+      });
+  }
+
+  addAvaibality() {
+    this.addAvaibalityBool = true;
+    this.modificationAvaibalityBool = false;
+  }
+
+  updateAvailability() {
+    if (this.modificationAvaibalityBool) {
+      for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
+        if (this.listAllAvaibalityUpdate[i].day != '') {
+          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].day = this.listAllAvaibalityUpdate[i].day;
+          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].id = this.listAllAvaibalityUpdate[i].id;
+        }
+        if (this.listAllAvaibalityUpdate[i].startHour != -1) {
+          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].startHour = this.listAllAvaibalityUpdate[i].startHour;
+          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].id = this.listAllAvaibalityUpdate[i].id;
+        }
+        if (this.listAllAvaibalityUpdate[i].endHour != -1) {
+          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].endHour = this.listAllAvaibalityUpdate[i].endHour;
+          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].id = this.listAllAvaibalityUpdate[i].id;
+        }
+      }
+      for (let i = 0; i < this.listAllAvaibality.length; i++) {
+        if (this.countInArrayAvaibality(this.listAllAvaibality, this.listAllAvaibality[i].day) > 1) {
+          this.errorMessage = "Vous avez déjà une disponibilité pour ce jour";
+          this.returnError = true;
+          return;
+        }
+      }
+      this.modificationAvaibalityBool = false;
+      this.addAvaibalityBool = false;
+      this.listAllSkillsUpdate = [{skill: '', id: -1, category: '', index: 0}];
+      this.listAllAvaibalityUpdate = [{
+        id: -1,
+        day: '',
+        startHour: -1,
+        endHour: -1,
+        index: 0
+      }];
+
+      this.updateAvaibality.id = this.userId;
+      this.updateAvaibality.arrayAvaibality = this.listAllAvaibality;
+
+      this.availableService.updateAvailabilityBabysitter(this.updateAvaibality).subscribe(
+        (data: any) => {
+          //navigate to the next page
+          if (data.response) {
+            this.modificationAvaibalityBool = false;
+            this.addAvaibalityBool = false;
+          } else {
+            this.returnError = true;
+            this.errorMessage = "Une erreur est survenue " + data.message;
+          }
+        }, (error: any) => {
+          this.returnError = true;
+          this.errorMessage = "Une erreur est survenue " + error;
+        });
+    }
+    this.cancel();
+  }
+
+  initAllAvaibality() {
+    this.listAllAvaibality = [{
+      id: -1,
+      day: '',
+      startHour: -1,
+      endHour: -1
+    }];
+    //getAvaibalityById
+    this.availableService.getByUserId(this.userId).subscribe(
+      (data: any) => {
+        if (data.response) {
+          for (let i = 0; i < data.response.length; i++) {
+            if (this.listAllAvaibality[0].day == '') {
+              this.listAllAvaibality[0] = {
+                id: data.response[i].id,
+                day: data.response[i]["day"],
+                startHour: data.response[i]["startHour"],
+                endHour: data.response[i]["endHour"]
+              };
+            } else {
+              this.listAllAvaibality.push({
+                id: data.response[i].id,
+                day: data.response[i]["day"],
+                startHour: data.response[i]["startHour"],
+                endHour: data.response[i]["endHour"]
+              });
+            }
+          }
+        }
+      });
+  }
+
+  modificationAvailability() {
+    this.modificationAvaibalityBool = true;
+    this.addAvaibalityBool = false;
+  }
+
+  onChangeDay($event: any, index: number, id: number) {
+    if ($event.target.value == '') {
+      return;
+    }
+    let day = $event.target.value;
+    if (this.modificationAvaibalityBool && index != -1) {
+      if (this.listAllAvaibalityUpdate[0].day == "") {
+        this.listAllAvaibalityUpdate[0].day = day;
+        this.listAllAvaibalityUpdate[0].id = id;
+        this.listAllAvaibalityUpdate[0].index = index;
+      } else {
+        for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
+          if (this.listAllAvaibalityUpdate[i].index == index) {
+            this.listAllAvaibalityUpdate[i].day = day;
+            this.listAllAvaibalityUpdate[0].id = id;
+            this.listAllAvaibalityUpdate[i].index = index;
+            return;
+          }
+        }
+        this.listAllAvaibalityUpdate.push({day: day, id: id, startHour: -1, endHour: -1, index: index});
+      }
+    }
+
+    if (this.addAvaibalityBool && index == -1) {
+      if (this.listAllAvaibalityUpdate[0].day == "") {
+        this.listAllAvaibalityUpdate[0].day = day;
+        this.listAllAvaibalityUpdate[0].id = id;
+        this.listAllAvaibalityUpdate[0].index = index;
+      } else {
+        for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
+          if (this.listAllAvaibalityUpdate[i].index == index) {
+            this.listAllAvaibalityUpdate[i].day = day;
+            this.listAllAvaibalityUpdate[0].id = id;
+            this.listAllAvaibalityUpdate[i].index = -1;
+            return;
+          }
+        }
+        this.listAllAvaibalityUpdate.push({day: day, id: id, startHour: -1, endHour: -1, index: -1});
+      }
+    }
+  }
+
+  onChangeHourStart($event: any, index: number, id: number) {
+    if ($event.target.value == '') {
+      return;
+    }
+    let startHour = $event.target.value;
+    if (this.modificationAvaibalityBool && index != -1) {
+      if (this.listAllAvaibalityUpdate[0].day == "" && this.listAllAvaibalityUpdate[0].startHour == -1) {
+        this.listAllAvaibalityUpdate[0].startHour = startHour;
+        this.listAllAvaibalityUpdate[0].index = index;
+        this.listAllAvaibalityUpdate[0].id = id;
+      } else {
+        for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
+          if (this.listAllAvaibalityUpdate[i].index == index) {
+            this.listAllAvaibalityUpdate[i].startHour = startHour;
+            this.listAllAvaibalityUpdate[i].id = id;
+            this.listAllAvaibalityUpdate[i].index = index;
+            return;
+          }
+        }
+        this.listAllAvaibalityUpdate.push({day: '', id: id, startHour: startHour, endHour: -1, index: index});
+      }
+    }
+    if (this.addAvaibalityBool && index == -1) {
+      if (this.listAllAvaibalityUpdate[0].day == "") {
+        this.listAllAvaibalityUpdate[0].startHour = startHour;
+        this.listAllAvaibalityUpdate[0].id = id;
+        this.listAllAvaibalityUpdate[0].index = index;
+      } else {
+        for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
+          if (this.listAllAvaibalityUpdate[i].index == index) {
+            this.listAllAvaibalityUpdate[i].startHour = startHour;
+            this.listAllAvaibalityUpdate[i].id = id;
+            this.listAllAvaibalityUpdate[i].index = -1;
+            return;
+          }
+        }
+        this.listAllAvaibalityUpdate.push({day: '', id: id, startHour: startHour, endHour: -1, index: -1});
+      }
+    }
+  }
+
+  onChangeHourEnd($event: any, index: number, id: number) {
+    if ($event.target.value == '') {
+      return;
+    }
+    let endHour = $event.target.value;
+    if (this.modificationAvaibalityBool && index != -1) {
+      if (this.listAllAvaibalityUpdate[0].day == "" && this.listAllAvaibalityUpdate[0].endHour == -1) {
+        this.listAllAvaibalityUpdate[0].endHour = endHour;
+        this.listAllAvaibalityUpdate[0].index = index;
+        this.listAllAvaibalityUpdate[0].id = id;
+      } else {
+        for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
+          if (this.listAllAvaibalityUpdate[i].index == index) {
+            this.listAllAvaibalityUpdate[i].endHour = endHour;
+            this.listAllAvaibalityUpdate[i].id = id;
+            this.listAllAvaibalityUpdate[i].index = index;
+            return;
+          }
+        }
+        this.listAllAvaibalityUpdate.push({day: '', id: id, startHour: -1, endHour: endHour, index: index});
+      }
+    }
+    if (this.addAvaibalityBool && index == -1) {
+      if (this.listAllAvaibalityUpdate[0].day == "") {
+        this.listAllAvaibalityUpdate[0].endHour = endHour;
+        this.listAllAvaibalityUpdate[0].id = id;
+        this.listAllAvaibalityUpdate[0].index = index;
+      } else {
+        for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
+          if (this.listAllAvaibalityUpdate[i].index == index) {
+            this.listAllAvaibalityUpdate[i].endHour = endHour;
+            this.listAllAvaibalityUpdate[i].id = id;
+            this.listAllAvaibalityUpdate[i].index = -1;
+            return;
+          }
+        }
+        this.listAllAvaibalityUpdate.push({day: '', id: id, endHour: endHour, startHour: -1, index: -1});
+      }
+    }
+  }
+
+  insertAvaibality() {
+    if (this.addAvaibalityBool) {
+      if (!this.listAllDay.includes(this.listAllAvaibalityUpdate[0].day)) {
+        this.errorMessage = "Veuillez choisir un jour";
+        this.returnError = true;
+        return;
+      } else if (this.listAllAvaibalityUpdate[0].day.length == 0) {
+        this.errorMessage = "Veuillez choisir un jour";
+        this.returnError = true;
+        return;
+      } else if (parseInt(String(this.listAllAvaibalityUpdate[0].endHour)) < parseInt(String(this.listAllAvaibalityUpdate[0].startHour))) {
+        this.errorMessage = "L'heure de fin doit être supérieure à l'heure de début";
+        this.returnError = true;
+        return;
+      }
+
+      if (this.countInArrayAvaibality(this.listAllAvaibality, this.listAllAvaibalityUpdate[0].day) > 1) {
+        this.errorMessage = "Vous avez déjà une disponibilité pour ce jour";
+        this.returnError = true;
+        return;
+      }
+
+      let avaibality = {
+        idUser: this.userId,
+        day: this.listAllAvaibalityUpdate[0].day,
+        startHour: this.listAllAvaibalityUpdate[0].startHour,
+        endHour: this.listAllAvaibalityUpdate[0].endHour,
+        idPost: null
+      };
+      this.availableService.insertAvailability(avaibality).subscribe(
+        (data: any) => {
+          //navigate to the next page
+          if (data.response) {
+            this.modificationAvaibalityBool = false;
+            this.addAvaibalityBool = false;
+          } else {
+            this.returnError = true;
+            this.errorMessage = data.message;
+          }
+          this.listAllAvaibalityUpdate = [{day: '', id: -1, endHour: -1, startHour: -1, index: 0}];
+        }, (error: any) => {
+          this.listAllAvaibalityUpdate = [{day: '', id: -1, endHour: -1, startHour: -1, index: 0}];
+          this.returnError = true;
+          this.errorMessage = "Une erreur est survenue " + error;
+        });
+    }
+  }
 }

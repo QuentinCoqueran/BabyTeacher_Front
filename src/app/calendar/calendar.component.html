@@ -13,7 +13,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let country of countries; index as i">
+    <tr *ngFor="let country of days; index as i">
       <th scope="row">{{ i }}H</th>
       <td  [className]="(country._lundi == 'X') ? 'bg-green' : 'bg-red'"></td>
       <td  [className]="(country._mardi == 'X') ? 'bg-green' : 'bg-red'"></td>
