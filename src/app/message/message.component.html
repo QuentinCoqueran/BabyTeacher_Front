@@ -1,6 +1,11 @@
 <div class="spinner" ng-show="loading" *ngIf="loading">
   <img src="http://w3lessons.info/demo/jquery-preloader/ajax-loader.gif"/>
 </div>
+<p *ngIf="returnError">
+  <ngb-alert [dismissible]="true" (closed)="closeAlert()">
+    <strong>Attention !</strong> {{errorMessage}}.
+  </ngb-alert>
+</p>
 <div class="d-flex flex-row height-size m-3">
   <div id="div-list-messages" class=" bg-light">
     <ul class="list-group">

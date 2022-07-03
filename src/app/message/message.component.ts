@@ -28,7 +28,7 @@ export class MessageComponent implements OnInit {
   public idSession: string = "";
   public loginOther: Array<any> = [];
   public login: [string] = [""];
-  public inboxBool : boolean = false;
+  public inboxBool: boolean = false;
 
   constructor(private authService: ConnexionService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) {
   }
@@ -49,7 +49,7 @@ export class MessageComponent implements OnInit {
         await this.router.navigate(['/login']);
         return;
       }
-      if(params['login']){
+      if (params['login']) {
         this.inboxBool = false;
         this.loginParam = params['login'];
         await this.initUserByLogin();
@@ -59,7 +59,7 @@ export class MessageComponent implements OnInit {
         await this.getAllSession();
         await this.getAllUsers();
       }
-      if(params['inbox']){
+      if (params['inbox']) {
         this.inboxBool = true;
         await this.initUserByToken();
         await this.getAllSession();
@@ -239,10 +239,21 @@ export class MessageComponent implements OnInit {
   }
 
   moveSession(login: string) {
-    this.router.navigate(['/message'], {queryParams: {login: login}});
+    if (this.login.includes(login)) {
+      this.router.navigate(['/message'], {queryParams: {login: login}});
+    } else {
+      this.returnError = true;
+      this.errorMessage = "Veuillez entrer un utilisateur existant";
+    }
   }
+
 
   moveToProfil(login: string) {
     this.router.navigate(['/profile'], {queryParams: {login: login}});
   }
+
+  closeAlert() {
+    this.returnError = false;
+  }
 }
+
