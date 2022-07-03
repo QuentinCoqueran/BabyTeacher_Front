@@ -16,7 +16,7 @@ interface Country {
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
-  countries = [{
+  days = [{
     _lundi: "",
     _mardi: "",
     _mercredi: "",
@@ -44,8 +44,7 @@ export class CalendarComponent implements OnInit {
     this.availableService.getAvailabilityParseByUserId(this.idUser.toString()).subscribe(
       (data: any) => {
         if (data.response) {
-          console.log(data.response);
-          this.countries = data.response.listCalendar;
+          this.days = data.response.listCalendar;
         }
       });
   }
