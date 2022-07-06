@@ -29,6 +29,7 @@ export class MessageComponent implements OnInit {
   public loginOther: Array<any> = [];
   public login: [string] = [""];
   public inboxBool: boolean = false;
+  public roleToken: string;
 
   constructor(private authService: ConnexionService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) {
   }
@@ -91,17 +92,18 @@ export class MessageComponent implements OnInit {
           this.roleId = Object.values(userService)[i];
         }
       }
-      await this.initRole();
+      this.user.role =  await this.initRole(this.userIdByLogin);
     } else {
       await this.router.navigate(['/login']);
       return;
     }
   }
 
-  private async initRole() {
-    let role = await this.authService.getRoleByToken(this.userIdByLogin);
+  private async initRole(idUser: number) {
+    let role = await this.authService.getRoleByToken(idUser);
+    console.log(idUser)
     if (role) {
-      this.user.role = Object.values(role)[0]['role'];
+      return Object.values(role)[0]['role'];
     } else {
       this.user.role = "";
       this.errorMessage = "Veuillez vous reconnecter";
@@ -146,6 +148,7 @@ export class MessageComponent implements OnInit {
       await this.router.navigate(['/login']);
       return;
     }
+    this.roleToken =  await this.initRole(this.userIdByToken);
   }
 
   private async getAllMessage() {
