@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
-  <a class="navbar-brand" href="#">BabyTeacher</a>
+  <a class="navbar-brand" href="/home">BabyTeacher</a>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
@@ -18,7 +18,7 @@
     <div ngbDropdown class="d-inline-block" style="margin-right: 5%" *ngIf="isConnectedBool">
       <img class="fit-picture float-right border-hover-img"
            [src]='pictureProfile'
-           alt="Grapefruit slice atop a pile of other slices" id="dropdownBasic1" ngbDropdownToggle
+           alt="Profile picture" id="dropdownBasic1" ngbDropdownToggle
            width="50">
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
         <button ngbDropdownItem [routerLink]="['/message']"

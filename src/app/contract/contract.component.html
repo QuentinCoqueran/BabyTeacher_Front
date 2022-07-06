@@ -1,0 +1,106 @@
+<div class="spinner" ng-show="loading" *ngIf="loading">
+  <img src="http://w3lessons.info/demo/jquery-preloader/ajax-loader.gif"/>
+</div>
+<p *ngIf="returnError">
+  <ngb-alert [dismissible]="true" (closed)="closeAlert()">
+    <strong>Attention !</strong> {{errorMessage}}.
+  </ngb-alert>
+</p>
+
+<div class="text-center">
+  <br>
+  <div class="d-flex flex-row justify-content-evenly ">
+    <input type="submit" value="Creer un contrat" (click)="displayContract()"/>
+    <input type="submit" value="Mes contrats" (click)="displayHistory()"
+           *ngIf="user['role'] == 'babysitter'"/>
+  </div>
+  <div *ngIf="displayHistoryBool && !displayContractBool">
+  </div>
+  <div *ngIf="!displayHistoryBool && displayContractBool">
+    <div class="wrapper fadeInDown">
+      <div id="formContent">
+        <div *ngIf="!displayHours">
+          <div class="fadeIn first">
+            <br>
+            <h3>Babysitter</h3>
+            <br>
+          </div>
+          <div>
+            <input type="text" #nom class="fadeIn second" placeholder="Nom" value="{{user['lastname']}} " readonly>
+            <input type="text" #prenom class="fadeIn third" placeholder="Prenom" value="{{user['name']}} " readonly>
+            <input type="number" #age class="fadeIn third" placeholder="Age"
+                   value="{{user['age']}}" readonly>
+            <br><br>
+            <input type="submit" class="fadeIn fourth" value="Continuer"
+                   (click)="saveBabysitter()">
+          </div>
+        </div>
+        <div *ngIf="displayHours">
+          <br>
+          <h3>Horraire</h3>
+          <br>
+          <div class="text-center">
+            <input type="number" #hourlyWage placeholder="Taux horraire" min="1">
+            <input type="number" #totalHours placeholder="Nombre d'heure totale" min="1">
+            <br><br>
+            <form class="row row-cols-sm-auto justify-content-evenly">
+              <div class="col-12">
+                <p>Date de début</p>
+                <div class="dp-hidden position-absolute">
+                  <div class="input-group">
+                    <input name="datepicker"
+                           class="form-control"
+                           ngbDatepicker
+                           #datepicker="ngbDatepicker"
+                           [autoClose]="'outside'"
+                           (dateSelect)="onDateSelection($event)"
+                           [displayMonths]="2"
+                           [dayTemplate]="t"
+                           outsideDays="hidden"
+                           [startDate]="fromDate!"
+                           tabindex="-1">
+                    <ng-template #t let-date let-focused="focused">
+          <span class="custom-day"
+                [class.focused]="focused"
+                [class.range]="isRange(date)"
+                [class.faded]="isHovered(date) || isInside(date)"
+                (mouseenter)="hoveredDate = date"
+                (mouseleave)="hoveredDate = null">
+            {{ date.day }}
+          </span>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <input #dpFromDate
+                         class="form-control" placeholder="dd-mm-yyyy"
+                         name="dpFromDate"
+                         [value]="formatter.format(fromDate) | date: 'dd/MM/yyyy'"
+                         (input)="fromDate = validateInput(fromDate, dpFromDate.value)" readonly>
+                  <button class="btn btn-outline-secondary calendar" (click)="datepicker.toggle()" type="button"><i
+                    class="fa fa-calendar" aria-hidden="true" style="color: #39ace7"></i></button>
+                </div>
+              </div>
+              <div class="col-12" style="margin-top: 5%">
+                <p>Date de fin</p>
+                <div class="input-group">
+                  <input #dpToDate
+                         class="form-control" placeholder="dd-mm-yyyy"
+                         name="dpToDate"
+                         [value]="formatter.format(toDate ) | date: 'dd/MM/yyyy'"
+                         (input)="toDate = validateInput(toDate, dpToDate.value)" readonly>
+                  <button class="btn btn-outline-secondary calendar" (click)="datepicker.toggle()" type="button"><i
+                    class="fa fa-calendar" style="color: #39ace7" aria-hidden="true"></i></button>
+                </div>
+              </div>
+            </form>
+            <br>
+            <input type="submit" value="Valider"
+                   (click)="saveHours(hourlyWage.value,dpFromDate.value,dpToDate.value,totalHours.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+</div>

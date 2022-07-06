@@ -13,6 +13,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { MessageComponent } from './message/message.component';
 import {AuthGuard} from "./auth.guard";
 import { CalendarComponent } from './calendar/calendar.component';
+import { HomeComponent } from './home/home.component';
+import { ContractComponent } from './contract/contract.component';
 
 
 
@@ -26,6 +28,8 @@ import { CalendarComponent } from './calendar/calendar.component';
     NavbarComponent,
     MessageComponent,
     CalendarComponent,
+    HomeComponent,
+    ContractComponent,
   ],
   imports: [
     BrowserModule,
