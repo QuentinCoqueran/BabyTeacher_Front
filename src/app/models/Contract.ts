@@ -4,7 +4,7 @@ export class Contract {
   id: number | undefined;
   idParent: number;
   idBabysitter: number;
-  validateAt: string;
+  validateAt: Date | null;
   numberOfHours: number;
   hourlyWage: number;
   qrCode: string | undefined;
@@ -15,7 +15,7 @@ export class Contract {
   step: number = 0;
 
 
-  constructor(id: number | undefined, idParent: number, idBabysitter: number, validateAt: string, numberOfHours: number, hourlyWage: number, qrCode: string | undefined, numberOfSitting: number, numberOfHourDone: number, startDate: Date | null, endDate: Date | null, step: number) {
+  constructor(id: number | undefined, idParent: number, idBabysitter: number, validateAt: Date | null, numberOfHours: number, hourlyWage: number, qrCode: string | undefined, numberOfSitting: number, numberOfHourDone: number, startDate: Date | null, endDate: Date | null, step: number) {
     this.id = id;
     this.idParent = idParent;
     this.idBabysitter = idBabysitter;

@@ -22,7 +22,9 @@
            width="50">
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
         <button ngbDropdownItem [routerLink]="['/message']"
-                [queryParams]="{inbox:'inbox'}">Message
+                [queryParams]="{inbox:'inbox'}">Messages
+        </button>
+        <button ngbDropdownItem [routerLink]="['/contrat']">Contrats
         </button>
         <button ngbDropdownItem [routerLink]="['/profile']"
                 [queryParams]="{login:loginUser}">Profil

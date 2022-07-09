@@ -75,8 +75,10 @@ export class NavbarComponent implements OnInit {
     this.isConnectedBool = !!user;
   }
 
-  isDeconnected() {
+  async isDeconnected() {
     this.authService.logout();
     this.isConnectedBool = false;
+    await this.router.navigate(
+      ['/login']);
   }
 }

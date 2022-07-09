@@ -16,6 +16,7 @@ export class ConnexionService {
   private urlUserByLogin = `${environment.apiUrl}/auth/getUserLogin`;
   private urlFistConnexion = `${environment.apiUrl}/auth/getFirstConnexion`;
   private urlAllUser = `${environment.apiUrl}/auth/getAllUsers`;
+  private urlGetById = `${environment.apiUrl}/auth/getUserById`;
 
   constructor(private http: HttpClient) {
   }
@@ -122,12 +123,33 @@ export class ConnexionService {
   }
 
   getSkills(login: string) {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
     return new Promise<HttpEvent<any>>((resolve, reject) => {
-      this.http.get<HttpEvent<string>>(`${environment.apiUrl}/categorie/getSkillsByUserLogin/${login}`).subscribe(data => {
+      this.http.get<HttpEvent<string>>(`${environment.apiUrl}/categorie/getSkillsByUserLogin/${login}`, header).subscribe(data => {
         resolve(data);
       }, error => {
         reject(error)
       });
     });
+  }
+
+  getUserById(id: number) {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
+      this.http.get<HttpEvent<any>>(this.urlGetById + "/" + id, header).subscribe(data => {
+        resolve(data);
+      }, error => {
+        reject(error)
+      });
+    });
+
   }
 }

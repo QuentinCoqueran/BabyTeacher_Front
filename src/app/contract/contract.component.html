@@ -10,15 +10,44 @@
 <div class="text-center">
   <br>
   <div class="d-flex flex-row justify-content-evenly ">
-    <input type="submit" value="Creer un contrat" (click)="displayContract()"/>
-    <input type="submit" value="Mes contrats" (click)="displayHistory()"
-           *ngIf="user['role'] == 'babysitter'"/>
+    <input type="submit" value="Creer un contrat" (click)="displayContract()" *ngIf="roleToken =='parent'"/>
+    <input type="submit" value="Mes contrats" (click)="displayHistory()"/>
   </div>
   <div *ngIf="displayHistoryBool && !displayContractBool">
+    <div *ngFor="let elem of contracts" class="">
+
+
+      <ul class="list-group  ">
+        <li class="list-group-item d-flex flex-row justify-content-evenly">
+          <p>{{elem['validateAt'] | date: 'dd/MM/yyyy'}}</p>
+          <p *ngIf="elem['step'] == -1">Refusé par le Babysitter</p>
+          <p *ngIf="elem['step'] == 0"> Contrat en attente de validation par le Babysitter</p>
+          <p *ngIf="elem['step'] == 1"> Contrat en cours</p>
+          <p *ngIf="elem['step'] == 2"> Contrat en attente de payement</p>
+          <p *ngIf="elem['step'] == 3"> Contrat terminé</p>
+          <input type="submit" value="Voir le contrat" (click)="moveToHtmlContract(elem['id'])">
+          <input type="submit" value="Valider" (click)="updateStep(elem['id'],1)" *ngIf="roleToken == 'babysitter' && elem['step'] =='0'">
+          <input type="submit" value="Arreter le contrat" (click)="updateStep(elem['id'],2)" *ngIf="elem['step'] =='1'">
+          <input type="submit" value="Payer" (click)="makePayment(elem['id'])" *ngIf="roleToken == 'parent' && elem['step'] =='2'">
+        </li>
+      </ul>
+
+
+    </div>
   </div>
   <div *ngIf="!displayHistoryBool && displayContractBool">
     <div class="wrapper fadeInDown">
       <div id="formContent">
+        <form class="form-inline d-flex flex-row fadeIn first" *ngIf="!displayHours">
+          <input #searchValue placeholder="Charger un babysitter.." id="typeahead-basic" type="text"
+                 class="form-control"
+                 [ngbTypeahead]="search"/>
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+                  (click)="replaceBabysitter(searchValue.value)">
+            Search
+          </button>
+        </form>
+
         <div *ngIf="!displayHours">
           <div class="fadeIn first">
             <br>
