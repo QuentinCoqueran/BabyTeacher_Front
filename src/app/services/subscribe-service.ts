@@ -5,7 +5,7 @@ import {environment} from 'src/environments/environment';
 import {ResponseUser} from "../models/ResponseUser";
 import {UserSubscribe} from "../models/UserSubscribe";
 import {UpdateBabysitter} from "../models/UpdateBabysitter";
-import {UpdateAvaibality} from "../models/UpdateAvaibality";
+
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +41,12 @@ export class SubscribeService {
   }
 
   initCategories(): Observable<any> {
-    return this.http.get<any>(this.urlGetAllCategories);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlGetAllCategories,header);
   }
 
   deleteSkill(id: number) {

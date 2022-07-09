@@ -36,23 +36,48 @@ export class MessageService {
   };
 
   createSessionMessage(message: any): Observable<any> {
-    return this.http.post<boolean>(this.urlCreateSessionMessage, message);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.post<boolean>(this.urlCreateSessionMessage, message,header);
   }
 
   saveMessage(message: any): Observable<boolean> {
-    return this.http.post<boolean>(this.urlSaveMessage, message);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.post<boolean>(this.urlSaveMessage, message,header);
   }
 
   getMessage(idUser1: number, idUser2: number): Observable<any> {
-    return this.http.get<any>(this.urlGetMessage + "/" + idUser1 + "/" + idUser2);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlGetMessage + "/" + idUser1 + "/" + idUser2,header);
   }
 
   getAllMessagesByIdUser(idUser: string): Observable<any> {
-    return this.http.get<any>(this.urlGetAllMessagesByIdUser + "/" + idUser);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlGetAllMessagesByIdUser + "/" + idUser,header);
   }
 
   isMessageExist(idUser1: number, idUser2: number): Observable<any> {
-    return this.http.get<boolean>(this.urlIsMessageExist + "/" + idUser1 + "/" + idUser2);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<boolean>(this.urlIsMessageExist + "/" + idUser1 + "/" + idUser2,header);
   }
 
 }
