@@ -6,6 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {UpdateBabysitter} from "../models/UpdateBabysitter";
 import {AvailabilityService} from "../services/availability.service";
 import {UpdateAvaibality} from "../models/UpdateAvaibality";
+import {NgbRatingConfig} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-profile',
@@ -32,6 +33,7 @@ export class ProfileComponent implements OnInit {
   public addSkillBool: boolean = false;
   public addAvaibalityBool: boolean = false;
   public modificationAvaibalityBool: boolean = false;
+  public displayCommentBool: boolean = false;
   public listAllCategories: string[] = [];
   public listAllSkills: [{ category: string, id: number, skill: string }] = [{skill: '', id: -1, category: ''}];
   public listAllAvaibality: [{ id: number, day: string, startHour: number, endHour: number }] = [{
@@ -62,11 +64,13 @@ export class ProfileComponent implements OnInit {
   loading: boolean = false;
   listAllDay = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
   listAllHour = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+  currentRate: number = 0;
 
-  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private availableService: AvailabilityService) {
+  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private availableService: AvailabilityService, private config: NgbRatingConfig) {
   }
 
   ngOnInit(): void {
+    this.config.max = 5;
     this.route.queryParams.subscribe(async params => {
       this.loading = true;
       this.loginParam = params['login'];
@@ -807,5 +811,40 @@ export class ProfileComponent implements OnInit {
           this.errorMessage = "Une erreur est survenue " + error;
         });
     }
+  }
+
+  displayComment() {
+    this.displayCommentBool = !this.displayCommentBool;
+  }
+
+
+  insertComment(value: string) {
+    if (this.currentRate == 0) {
+      this.returnError = true;
+      this.errorMessage = "Veuillez donner une note";
+      return;
+    }
+    if (value.length == 0) {
+      this.returnError = true;
+      this.errorMessage = "Veuillez donner un commentaire";
+      return;
+    }
+    let comment = {
+      idProfile: this.userId,
+      date : new Date(),
+      content: value,
+      note: this.currentRate
+    }
+    this.availableService.insertComment(comment).subscribe(
+      (data: any) => {
+        //navigate to the next page
+        if (data.response) {
+          this.returnError = false;
+          this.errorMessage = "";
+        } else {
+          this.returnError = true;
+          this.errorMessage = data.message;
+        }
+      });
   }
 }
