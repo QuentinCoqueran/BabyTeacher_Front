@@ -26,9 +26,13 @@
           <p *ngIf="elem['step'] == 2"> Contrat en attente de payement</p>
           <p *ngIf="elem['step'] == 3"> Contrat terminé</p>
           <input type="submit" value="Voir le contrat" (click)="moveToHtmlContract(elem['id'])">
-          <input type="submit" value="Valider" (click)="updateStep(elem['id'],1)" *ngIf="roleToken == 'babysitter' && elem['step'] =='0'">
+          <input type="submit" value="Valider" (click)="updateStep(elem['id'],1)"
+                 *ngIf="roleToken == 'babysitter' && elem['step'] =='0'">
+          <input type="submit" value="Refuser" (click)="updateStep(elem['id'],-1)"
+                 *ngIf="roleToken == 'babysitter' && elem['step'] =='0'">
           <input type="submit" value="Arreter le contrat" (click)="updateStep(elem['id'],2)" *ngIf="elem['step'] =='1'">
-          <input type="submit" value="Payer" (click)="makePayment(elem['id'])" *ngIf="roleToken == 'parent' && elem['step'] =='2'">
+          <input type="submit" value="Payer" (click)="makePayment(elem['id'])"
+                 *ngIf="roleToken == 'parent' && elem['step'] =='2'">
         </li>
       </ul>
 
