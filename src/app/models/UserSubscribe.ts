@@ -5,13 +5,13 @@ export class UserSubscribe {
   lastname: string;
   name: string;
   role: string;
-  age: number;
+  age: number | null;
   sexe: number;
   email: string;
   photo: string | undefined;
   description: string | undefined;
 
-  constructor(login: string, password: string, lastname: string, name: string, role: string, age: number, sexe: number,  email: string) {
+  constructor(login: string, password: string, lastname: string, name: string, role: string, age: number | null, sexe: number,  email: string) {
     this.login = login;
     this.password = password;
     this.lastname = lastname;

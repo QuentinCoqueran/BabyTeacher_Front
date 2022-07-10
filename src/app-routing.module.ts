@@ -9,6 +9,10 @@ import {AuthGuard} from "./app/auth.guard";
 import {ProfileComponent} from "./app/profile/profile.component";
 import {MessageComponent} from "./app/message/message.component";
 import {CalendarComponent} from "./app/calendar/calendar.component";
+import {HomeComponent} from "./app/home/home.component";
+import {ContractComponent} from "./app/contract/contract.component";
+import {HtmlContractComponent} from "./app/html-contract/html-contract.component";
+
 
 
 const routes: Routes = [
@@ -18,7 +22,10 @@ const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'first-connection-babysitter', component: FirstConnectionBabysitterComponent, canActivate: [AuthGuard]},
   {path: 'message', component: MessageComponent, canActivate: [AuthGuard]},
+  {path: 'contrat', component: ContractComponent, canActivate: [AuthGuard]},
+  {path: 'html-contract', component: HtmlContractComponent, canActivate: [AuthGuard]},
   {path: 'calendar', component: CalendarComponent},
+  {path: 'home', component: HomeComponent},
 ];
 
 @NgModule({

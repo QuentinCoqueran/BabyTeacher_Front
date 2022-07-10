@@ -30,6 +30,10 @@
         <h4 class="list-group-item-action bg-transparent" (click)="moveToProfil(user['login'])">@{{user["login"]}}</h4>
         <h6>{{user["role"]}}</h6>
       </div>
+      <div style="margin-top: 1%; margin-left: 2%">
+        <input type="submit" value="Proposer un contrat" *ngIf='roleToken == "parent" && user["role"] == "babysitter"'[routerLink]="['/contrat']"
+               [queryParams]="{login:user['login']}">
+      </div>
     </div>
     <div id="div-chat" class="bg-light d-flex flex-column" *ngIf="!inboxBool">
       <br>

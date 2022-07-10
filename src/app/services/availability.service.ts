@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {io} from "socket.io-client";
 import {UpdateAvaibality} from "../models/UpdateAvaibality";
 
 @Injectable({
@@ -20,22 +19,47 @@ export class AvailabilityService {
   }
 
   getAvailabilityParseByUserId(idUser: string): Observable<any> {
-    return this.http.get<any>(this.urlAvailabilityParse + "/" + idUser);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlAvailabilityParse + "/" + idUser, header);
   }
 
   //getByUserId
   getByUserId(idUser: number): Observable<any> {
-    return this.http.get<any>(this.urlAvailabilityById + "/" + idUser);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlAvailabilityById + "/" + idUser,header);
   }
 
   updateAvailabilityBabysitter(updateAvailability: UpdateAvaibality): Observable<boolean> {
-    return this.http.put<boolean>(this.urlUpdateAvailabilityBabysitter, updateAvailability);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.put<boolean>(this.urlUpdateAvailabilityBabysitter, updateAvailability, header);
   }
 
   insertAvailability(avaibality: {}): Observable<boolean> {
-    return this.http.post<boolean>(this.insertAvailabilityBabysitter, avaibality);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.post<boolean>(this.insertAvailabilityBabysitter, avaibality,header);
   }
   deleteAvaibality(id: number) {
-    return this.http.delete(this.urlDelete + "/" + id);
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.delete(this.urlDelete + "/" + id,header);
   }
 }

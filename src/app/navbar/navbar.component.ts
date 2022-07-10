@@ -64,14 +64,21 @@ export class NavbarComponent implements OnInit {
   async isConnected() {
     let user = await this.authService.isUserLoggedIn();
     if(user) {
-      this.pictureProfile = Object.values(user)[8];
+      if(Object.values(user)[8]){
+        this.pictureProfile = Object.values(user)[8];
+      }else{
+        this.pictureProfile = "../assets/avatar.png";
+      }
+
       this.loginUser = Object.values(user)[4];
     }
     this.isConnectedBool = !!user;
   }
 
-  isDeconnected() {
+  async isDeconnected() {
     this.authService.logout();
     this.isConnectedBool = false;
+    await this.router.navigate(
+      ['/login']);
   }
 }
