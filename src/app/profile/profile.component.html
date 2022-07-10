@@ -26,8 +26,20 @@
             </div>
           </div>
         </div>
-        <div class="card mt-3 text-center">
+        <br>
+        <div class="card mt-3 text-center" class="text-center">
           <h6 class="mb-0">Avis</h6>
+          <br>
+          <input (click)="displayComment()" *ngIf="!samePeople" class="w-25" type="submit" value="Ajouter">
+          <br>
+          <br>
+          <div *ngIf="displayCommentBool">
+          <textarea #comment type="text"
+                    class="fadeIn second  form-control" maxlength="100"></textarea>
+            <ngb-rating [(rate)]="currentRate"></ngb-rating>
+            <br>
+            <input (click)="insertComment(comment.value)" class="w-25" type="submit" value="Valider">
+          </div>
         </div>
       </div>
       <div class="col-md-8">
