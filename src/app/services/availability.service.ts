@@ -73,4 +73,13 @@ export class AvailabilityService {
     }
     return this.http.post(this.urlComment, comment, header);
   }
+
+  getAllComments(userId: number) {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get(`${environment.apiUrl}/comment/getByProfile/${userId}`, header);
+  }
 }
