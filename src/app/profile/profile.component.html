@@ -26,8 +26,49 @@
             </div>
           </div>
         </div>
-        <div class="card mt-3 text-center">
+        <br>
+        <div class="card mt-3 text-center" class="text-center">
           <h6 class="mb-0">Avis</h6>
+          <br>
+          <input (click)="displayComment()" *ngIf="!samePeople && !displayCommentBool" class="w-25" type="submit" value="Ajouter" >
+          <input (click)="displayComment()" *ngIf="!samePeople && displayCommentBool" class="w-25" type="submit" value="Annuler">
+          <br>
+          <br>
+          <div *ngIf="displayCommentBool">
+          <textarea #comment type="text"
+                    class="fadeIn second  form-control" maxlength="100"></textarea>
+            <ngb-rating [(rate)]="currentRate"></ngb-rating>
+            <br>
+            <input (click)="insertComment(comment.value)" class="w-25" type="submit" value="Valider">
+            <br>
+            <br>
+          </div>
+          <span class="displayAll" (click)="displayAllComment()"
+                *ngIf="!displayMoreComment"><i>Tout afficher...</i></span>
+          <span class="displayAll" (click)="displayAllComment()"
+                *ngIf="displayMoreComment"><i>Cacher...</i></span>
+          <br>
+          <br>
+          <div>
+            <ul class="list-group ">
+              <li class="list-group-item d-flex flex-column" *ngFor="let comment of listAllComments; let index = index">
+                <div *ngIf="index <1 || displayMoreComment">
+                  <div class="d-flex flex-row justify-content-center">
+                    <img [src]='comment.photo' alt="poster" class="rounded-circle"
+                         width="50">
+                    <h6 (click)="moveToProfil(comment.login)" style="margin-left: 5%" class="login-comment">
+                      @{{comment.login}}</h6>
+                  </div>
+                  <br>
+                  <span>{{comment.content}}</span>
+                  <br>
+                  <p style="font-size: small"><i>{{comment.date | date: 'dd/MM/yyyy'}}</i></p>
+                  <ngb-rating [(rate)]="comment.note" [readonly]="true" [max]="5"></ngb-rating>
+                  <span></span>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="col-md-8">
