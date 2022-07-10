@@ -35,7 +35,9 @@ export class ProfileComponent implements OnInit {
   public modificationAvaibalityBool: boolean = false;
   public displayCommentBool: boolean = false;
   public listAllCategories: string[] = [];
+  public displayMoreComment: boolean = false;
   public listAllSkills: [{ category: string, id: number, skill: string }] = [{skill: '', id: -1, category: ''}];
+  public idToken: number = 0;
   public listAllAvaibality: [{ id: number, day: string, startHour: number, endHour: number }] = [{
     id: -1,
     day: '',
@@ -65,6 +67,7 @@ export class ProfileComponent implements OnInit {
   listAllDay = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
   listAllHour = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
   currentRate: number = 0;
+  public listAllComments: any;
 
   constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private availableService: AvailabilityService, private config: NgbRatingConfig) {
   }
@@ -82,6 +85,7 @@ export class ProfileComponent implements OnInit {
       await this.initUserByToken();
       await this.initSkills();
       await this.initAllAvaibality()
+      await this.getAllComments();
       this.loading = false;
     });
   }
@@ -92,6 +96,9 @@ export class ProfileComponent implements OnInit {
       for (let i = 0; i < Object.keys(userService).length; i++) {
         if (Object.keys(userService)[i] == 'login') {
           this.samePeople = this.loginParam == Object.values(userService)[i];
+        }
+        if (Object.keys(userService)[i] == 'id') {
+          this.idToken = Object.values(userService)[i];
         }
       }
     } else {
@@ -829,9 +836,16 @@ export class ProfileComponent implements OnInit {
       this.errorMessage = "Veuillez donner un commentaire";
       return;
     }
+    for (let i = 0; i < this.listAllComments.length; i++) {
+      if (this.listAllComments[i].idUserComment == this.idToken) {
+        this.returnError = true;
+        this.errorMessage = "Vous avez déjà donné un commentaire";
+        return;
+      }
+    }
     let comment = {
       idProfile: this.userId,
-      date : new Date(),
+      date: new Date(),
       content: value,
       note: this.currentRate
     }
@@ -839,12 +853,62 @@ export class ProfileComponent implements OnInit {
       (data: any) => {
         //navigate to the next page
         if (data.response) {
-          this.returnError = false;
-          this.errorMessage = "";
+          this.displayCommentBool = false;
         } else {
           this.returnError = true;
           this.errorMessage = data.message;
         }
+      }, (error: any) => {
+        this.returnError = true;
+        this.errorMessage = "Une erreur est survenue " + error;
+      }, () => {
+        this.getAllComments()
       });
+  }
+
+  private async getAllComments() {
+    this.listAllComments = [];
+    this.availableService.getAllComments(this.userId).subscribe(
+      (data: any) => {
+        if (data.response) {
+          this.listAllComments = data.response;
+        } else {
+          this.returnError = true;
+          this.errorMessage = data.message;
+        }
+      }, (error: any) => {
+
+      }, () => {
+        for (let i = 0; i < this.listAllComments.length; i++) {
+          this.getUserById(this.listAllComments[i].idUserComment);
+        }
+      }
+    );
+  }
+
+  getUserById(id: number): any {
+    this.authService.getUserById(id).then(
+      (data: any) => {
+        if (data.response) {
+          for (let i = 0; i < this.listAllComments.length; i++) {
+            if (this.listAllComments[i].idUserComment == id) {
+              this.listAllComments[i].login = data.response[0].login;
+              this.listAllComments[i].photo = data.response[0].photo;
+            }
+          }
+        } else {
+          this.returnError = true;
+          this.errorMessage = data.message;
+        }
+      }
+    );
+  }
+
+  moveToProfil(login: string) {
+    this.router.navigate(['/profile'], {queryParams: {login: login}});
+  }
+
+  displayAllComment() {
+    this.displayMoreComment = !this.displayMoreComment;
   }
 }
