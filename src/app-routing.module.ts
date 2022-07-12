@@ -12,12 +12,13 @@ import {CalendarComponent} from "./app/calendar/calendar.component";
 import {HomeComponent} from "./app/home/home.component";
 import {ContractComponent} from "./app/contract/contract.component";
 import {HtmlContractComponent} from "./app/html-contract/html-contract.component";
+import {QrcodeConnexionComponent} from "./app/qrcode-connexion/qrcode-connexion.component";
 
 
 
 const routes: Routes = [
   {path: 'login', component: ConnexionUserComponent},
-  {path: '', redirectTo: 'login', pathMatch: 'full'},
+  {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path: 'subscribe', component: SubscribeUserComponent},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'first-connection-babysitter', component: FirstConnectionBabysitterComponent, canActivate: [AuthGuard]},
@@ -25,6 +26,7 @@ const routes: Routes = [
   {path: 'contrat', component: ContractComponent, canActivate: [AuthGuard]},
   {path: 'html-contract', component: HtmlContractComponent, canActivate: [AuthGuard]},
   {path: 'calendar', component: CalendarComponent},
+  {path: 'qrcode-connexion', component: QrcodeConnexionComponent},
   {path: 'home', component: HomeComponent},
 ];
 
