@@ -25,14 +25,10 @@ export class SubscribeUserComponent implements OnInit {
   }
 
   sendUserSubscribe(pseudo: string, password: string, lastname: string, name: string, age: string | null, sexe: string | null, email: string): void {
-    if(sexe != "1" && sexe != "2"){
-      this.errorMessage = "Erreur avec le sexe"
-      this.returnError = true;
-      return;
-    }
+
     if ((pseudo.trim() != "" && password.trim() != "" && lastname.trim() != "" && name.trim() != "" &&
       email.trim() != "" && this.role === "parent") || (pseudo.trim() != "" && password.trim() != "" && lastname.trim() != "" && name.trim() != "" &&
-      email.trim() != "" && age != null && sexe != null && this.role === "babysitter")) {
+      email.trim() != "" && age != null && this.sexe != null && this.role === "babysitter")) {
 
       if (this.role === "babysitter" && age && parseInt(age) < 16) {
         this.errorMessage = "Age minimum 16 ans"
