@@ -1,3 +1,12 @@
+<div *ngIf="displayQrCode" class="bg-modal">
+  <div class="popup d-flex flex-column">
+    <qr-code [value]="urlConnexionQrCode" [size]="400"></qr-code>
+    <br>
+    <input type="submit" value="close" (click)="generateQRCODE(-1)">
+  </div>
+</div>
+
+
 <div class="spinner" ng-show="loading" *ngIf="loading">
   <img src="http://w3lessons.info/demo/jquery-preloader/ajax-loader.gif"/>
 </div>
@@ -6,7 +15,6 @@
     <strong>Attention !</strong> {{errorMessage}}.
   </ngb-alert>
 </p>
-
 <div class="text-center">
   <br>
   <div class="d-flex flex-row justify-content-evenly ">
@@ -15,10 +23,10 @@
   </div>
   <div *ngIf="displayHistoryBool && !displayContractBool">
     <div *ngFor="let elem of contracts" class="">
-
-
       <ul class="list-group  ">
         <li class="list-group-item d-flex flex-row justify-content-evenly">
+          <p class="follow" (click)="generateQRCODE(elem.id)"  *ngIf="roleToken == 'babysitter'"><i class="fa fa-qrcode" aria-hidden="true"></i> QRCODE</p>
+          <p class="follow"><i class="fa fa-list-alt" aria-hidden="true"></i> feuille de suivi</p>
           <p>{{elem['validateAt'] | date: 'dd/MM/yyyy'}}</p>
           <p *ngIf="elem['step'] == -1">Refusé par le Babysitter</p>
           <p *ngIf="elem['step'] == 0"> Contrat en attente de validation par le Babysitter</p>

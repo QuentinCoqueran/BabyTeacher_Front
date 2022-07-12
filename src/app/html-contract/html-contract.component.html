@@ -5,7 +5,7 @@
 <div class="text-center" >
   <input type="submit" value="Extraire PDF" (click)="download()">
 </div>
-<div id="table" class="m-5" *ngIf="contract && parent && babysitter">
+<div id="table" class="m-5" *ngIf="!loading">
   <h3 class="text-center">Contrat de garde occasionnelle</h3>
   <br>
   <h6>Entre l'employeur : Mr/Mme {{parent[0]["lastname"].toUpperCase()}} {{parent[0]["name"]}} </h6>
