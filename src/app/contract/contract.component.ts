@@ -35,13 +35,12 @@ export class ContractComponent implements OnInit {
   paymentHandler: any = null;
   montant: number = 0;
   success: boolean = false
-
   failure: boolean = false
+  displayQrCode: boolean = false;
 
   constructor(private route: ActivatedRoute, private authService: ConnexionService, private router: Router, private calendar: NgbCalendar, public formatter: NgbDateParserFormatter,
               private contratService: ContractService) {
   }
-
 
   search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
     text$.pipe(
@@ -50,6 +49,7 @@ export class ContractComponent implements OnInit {
       map((term: string) => term.length < 2 ? []
         : this.login.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
     )
+  public urlConnexionQrCode: string;
 
   async ngOnInit() {
     this.invokeStripe();
@@ -390,5 +390,17 @@ export class ContractComponent implements OnInit {
 
       window.document.body.appendChild(script);
     }
+  }
+
+  generateQRCODE(id: number) {
+    console.log(this.contracts);
+    if (id != -1) {
+      for (let i = 0; i < this.contracts.length; i++) {
+        if (this.contracts[i]["id"] == id) {
+          this.urlConnexionQrCode = "http://51.38.190.134:4200/qrcode-connexion?idParent=" + this.contracts[i].idParent + "&idBabysitter=" + this.contracts[i].idBabysitter + "&idContract=" + this.contracts[i].id;
+        }
+      }
+    }
+    this.displayQrCode = !this.displayQrCode;
   }
 }

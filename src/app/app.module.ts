@@ -16,6 +16,8 @@ import {CalendarComponent} from './calendar/calendar.component';
 import {HomeComponent} from './home/home.component';
 import {ContractComponent} from './contract/contract.component';
 import {HtmlContractComponent} from "./html-contract/html-contract.component";
+import {QRCodeModule} from "angular2-qrcode";
+import { QrcodeConnexionComponent } from './qrcode-connexion/qrcode-connexion.component';
 
 
 @NgModule({
@@ -30,7 +32,8 @@ import {HtmlContractComponent} from "./html-contract/html-contract.component";
     CalendarComponent,
     HomeComponent,
     ContractComponent,
-    HtmlContractComponent
+    HtmlContractComponent,
+    QrcodeConnexionComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +41,7 @@ import {HtmlContractComponent} from "./html-contract/html-contract.component";
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
+    QRCodeModule
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent]

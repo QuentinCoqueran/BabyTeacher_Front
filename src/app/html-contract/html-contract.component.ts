@@ -33,6 +33,7 @@ export class HtmlContractComponent implements OnInit {
         await this.getUserById(this.contract["idParent"], true);
         await this.getUserById(this.contract["idBabysitter"], false);
       }
+      console.log(this.parent);
       this.loading = false;
     });
   }
@@ -41,9 +42,9 @@ export class HtmlContractComponent implements OnInit {
     await this.authService.getUserById(id).then(
       (data: any) => {
         if (isParent) {
-          this.parent = data;
+          this.parent = data.response;
         } else {
-          this.babysitter = data;
+          this.babysitter = data.response;
         }
       }, (error: any) => {
         this.returnError = true;
