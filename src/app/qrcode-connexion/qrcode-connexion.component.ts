@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {ConnexionService} from "../services/connexion.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {UserConnect} from "../models/UserConnect";
-import {UserConnectQRCode} from "../models/UserConnectQRCode";
+
 import {SubscribeService} from "../services/subscribe-service";
 import {AvailabilityService} from "../services/availability.service";
 import {NgbRatingConfig} from "@ng-bootstrap/ng-bootstrap";
 import {ContractService} from "../services/contract.service";
+import {UserConnectQRCode} from "../models/UserConnectQRCode";
 
 @Component({
   selector: 'app-qrcode-connexion',
