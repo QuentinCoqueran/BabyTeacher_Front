@@ -26,8 +26,8 @@ export class ConnexionService {
     return this.http.post<ResponseUser>(this.urlConnection, userConnect);
   }
 
-  connectUserQrCode(userConnect: UserConnect): Observable<ResponseUser> {
-    return this.http.post<ResponseUser>(this.urlConnectionQrCode, userConnect);
+  connectUserQrCode(userConnect: UserConnect): Observable<any> {
+    return this.http.post<any>(this.urlConnectionQrCode, userConnect);
   }
 
   logout(): void {
