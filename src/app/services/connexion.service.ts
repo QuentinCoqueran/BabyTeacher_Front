@@ -11,6 +11,7 @@ import {ResponseUser} from "../models/ResponseUser";
 export class ConnexionService {
 
   private urlConnection = `${environment.apiUrl}/auth/login`;
+  private urlConnectionQrCode = `${environment.apiUrl}/auth/loginQrCode`;
   private urlisUserLoggedIn = `${environment.apiUrl}/auth/me`;
   private urlRole = `${environment.apiUrl}/auth/getRoleByUserId`;
   private urlUserByLogin = `${environment.apiUrl}/auth/getUserLogin`;
@@ -23,6 +24,10 @@ export class ConnexionService {
 
   connectUser(userConnect: UserConnect): Observable<ResponseUser> {
     return this.http.post<ResponseUser>(this.urlConnection, userConnect);
+  }
+
+  connectUserQrCode(userConnect: UserConnect): Observable<any> {
+    return this.http.post<any>(this.urlConnectionQrCode, userConnect);
   }
 
   logout(): void {

@@ -14,6 +14,7 @@ export class ContractService {
   private urlGetById = `${environment.apiUrl}/contract/getById`;
   private urlGetStripe = `${environment.apiUrl}/contract/stripe`;
   private urlUpdateContractStep = `${environment.apiUrl}/contract/updateContractStep`;
+  private urlUpdateHoursDone = `${environment.apiUrl}/contract/updateHoursDone`;
 
   constructor(private http: HttpClient) {
   }
@@ -82,4 +83,19 @@ export class ContractService {
     });
   }
 
+  updateHours(id: number, hours: number) {
+    let idObj = {id: id, hours: hours};
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
+      return this.http.put<any>(this.urlUpdateHoursDone, idObj, header).subscribe(data => {
+        resolve(data);
+      }, error => {
+        reject(error)
+      });
+    });
+  }
 }
