@@ -2,7 +2,7 @@
   <div id="formContent">
     <p *ngIf="returnError">
       <ngb-alert [dismissible]="true" (closed)="closeAlert()">
-        <strong>Attention !</strong> Pseudo ou mot de passe incorrect.
+        <strong>Attention !</strong> {{errorMessage}}.
       </ngb-alert>
     </p>
     <div class="fadeIn first">
