@@ -18,6 +18,7 @@ import {ContractComponent} from './contract/contract.component';
 import {HtmlContractComponent} from "./html-contract/html-contract.component";
 import {QRCodeModule} from "angular2-qrcode";
 import { QrcodeConnexionComponent } from './qrcode-connexion/qrcode-connexion.component';
+import { PostsComponent } from './posts/posts.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { QrcodeConnexionComponent } from './qrcode-connexion/qrcode-connexion.co
     HomeComponent,
     ContractComponent,
     HtmlContractComponent,
-    QrcodeConnexionComponent
+    QrcodeConnexionComponent,
+    PostsComponent
   ],
   imports: [
     BrowserModule,
