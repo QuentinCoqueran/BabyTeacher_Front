@@ -1,0 +1,28 @@
+<div *ngIf="displayCreatePostsBool" class="bg-modal">
+  <div class="popup d-flex flex-column">
+    <h4 class="text-center">Creation d'un post</h4>
+    <br>
+    <div class="d-flex flex-row justify-content-evenly">
+      <input type="submit" value="Valider">
+      <input type="submit" value="Annuler" (click)="displayCreatePosts()">
+    </div>
+  </div>
+</div>
+<div *ngIf="displaySearchPostsBool" class="bg-modal">
+  <div class="popup d-flex flex-column">
+    <h4 class="text-center">Recherche des posts</h4>
+    <br>
+    <div class="d-flex flex-row justify-content-evenly">
+      <input type="submit" value="Valider">
+      <input type="submit" value="Annuler" (click)="displaySearchPosts()">
+    </div>
+  </div>
+</div>
+<div>
+  <br>
+  <div class="d-flex flex-row justify-content-evenly">
+    <input type="submit" value="Creer" (click)="displayCreatePosts()">
+    <input type="submit" value="Rechercher" (click)="displaySearchPosts()">
+  </div>
+  <br>
+</div>

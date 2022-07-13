@@ -13,7 +13,7 @@ import {HomeComponent} from "./app/home/home.component";
 import {ContractComponent} from "./app/contract/contract.component";
 import {HtmlContractComponent} from "./app/html-contract/html-contract.component";
 import {QrcodeConnexionComponent} from "./app/qrcode-connexion/qrcode-connexion.component";
-
+import {PostsComponent} from "./app/posts/posts.component";
 
 
 const routes: Routes = [
@@ -25,6 +25,7 @@ const routes: Routes = [
   {path: 'message', component: MessageComponent, canActivate: [AuthGuard]},
   {path: 'contrat', component: ContractComponent, canActivate: [AuthGuard]},
   {path: 'html-contract', component: HtmlContractComponent, canActivate: [AuthGuard]},
+  {path: 'posts', component: PostsComponent, canActivate: [AuthGuard]},
   {path: 'calendar', component: CalendarComponent},
   {path: 'qrcode-connexion', component: QrcodeConnexionComponent},
   {path: 'home', component: HomeComponent},
