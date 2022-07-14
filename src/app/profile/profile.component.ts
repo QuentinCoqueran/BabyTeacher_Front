@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ConnexionService} from "../services/connexion.service";
 import {UserSubscribe} from "../models/UserSubscribe";
 import {SubscribeService} from "../services/subscribe-service";
@@ -14,6 +14,7 @@ import {NgbRatingConfig} from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+
   public userId: number;
   public roleId: number;
   public errorMessage: string = "";
@@ -68,6 +69,7 @@ export class ProfileComponent implements OnInit {
   listAllHour = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
   currentRate: number = 0;
   public listAllComments: any;
+  private availabilityTest: string[][];
 
   constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private availableService: AvailabilityService, private config: NgbRatingConfig) {
   }
@@ -556,60 +558,6 @@ export class ProfileComponent implements OnInit {
     this.modificationAvaibalityBool = false;
   }
 
-  updateAvailability() {
-    if (this.modificationAvaibalityBool) {
-      for (let i = 0; i < this.listAllAvaibalityUpdate.length; i++) {
-        if (this.listAllAvaibalityUpdate[i].day != '') {
-          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].day = this.listAllAvaibalityUpdate[i].day;
-          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].id = this.listAllAvaibalityUpdate[i].id;
-        }
-        if (this.listAllAvaibalityUpdate[i].startHour != -1) {
-          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].startHour = this.listAllAvaibalityUpdate[i].startHour;
-          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].id = this.listAllAvaibalityUpdate[i].id;
-        }
-        if (this.listAllAvaibalityUpdate[i].endHour != -1) {
-          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].endHour = this.listAllAvaibalityUpdate[i].endHour;
-          this.listAllAvaibality[this.listAllAvaibalityUpdate[i].index].id = this.listAllAvaibalityUpdate[i].id;
-        }
-      }
-      for (let i = 0; i < this.listAllAvaibality.length; i++) {
-        if (this.countInArrayAvaibality(this.listAllAvaibality, this.listAllAvaibality[i].day) > 1) {
-          this.errorMessage = "Vous avez déjà une disponibilité pour ce jour";
-          this.returnError = true;
-          return;
-        }
-      }
-      this.modificationAvaibalityBool = false;
-      this.addAvaibalityBool = false;
-      this.listAllSkillsUpdate = [{skill: '', id: -1, category: '', index: 0}];
-      this.listAllAvaibalityUpdate = [{
-        id: -1,
-        day: '',
-        startHour: -1,
-        endHour: -1,
-        index: 0
-      }];
-
-      this.updateAvaibality.id = this.userId;
-      this.updateAvaibality.arrayAvaibality = this.listAllAvaibality;
-
-      this.availableService.updateAvailabilityBabysitter(this.updateAvaibality).subscribe(
-        (data: any) => {
-          //navigate to the next page
-          if (data.response) {
-            this.modificationAvaibalityBool = false;
-            this.addAvaibalityBool = false;
-          } else {
-            this.returnError = true;
-            this.errorMessage = "Une erreur est survenue " + data.message;
-          }
-        }, (error: any) => {
-          this.returnError = true;
-          this.errorMessage = "Une erreur est survenue " + error;
-        });
-    }
-    this.cancel();
-  }
 
   initAllAvaibality() {
     this.listAllAvaibality = [{
@@ -910,5 +858,24 @@ export class ProfileComponent implements OnInit {
 
   displayAllComment() {
     this.displayMoreComment = !this.displayMoreComment;
+  }
+
+
+  updateAvailability() {
+    this.updateAvaibality.id = this.userId;
+    this.updateAvaibality.arrayAvaibality = this.availabilityTest;
+    this.availableService.updateAvailabilityBabysitter(this.updateAvaibality).subscribe(
+      (data: any) => {
+        //navigate to the next page
+        if (data.response) {
+          console.log(data.response)
+        } else {
+          console.log("error")
+        }
+      });
+  }
+
+  addItem($event: string[][]) {
+    this.availabilityTest = $event;
   }
 }
