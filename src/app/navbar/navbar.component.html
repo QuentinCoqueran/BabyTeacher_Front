@@ -27,6 +27,7 @@
            alt="Profile picture" id="dropdownBasic1" ngbDropdownToggle
            width="50">
       <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <button ngbDropdownItem [routerLink]="['/admin']" *ngIf="roleUser === 'admin'">Administration</button>
         <button ngbDropdownItem [routerLink]="['/message']"
                 [queryParams]="{inbox:'inbox'}">Messages
         </button>
