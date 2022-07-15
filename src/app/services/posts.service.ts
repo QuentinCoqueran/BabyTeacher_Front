@@ -11,14 +11,15 @@ export class PostsService {
   private urlCreatePost = `${environment.apiUrl}/post/add`;
   private urlSearchPost = `${environment.apiUrl}/post/search-post`;
   private urlgetByiD = `${environment.apiUrl}/post/get`;
-  private urlgetByPost = `${environment.apiUrl}/activityzone/getByIdPost`;
+  private urlgetByAll = `${environment.apiUrl}/post/all`;
+  private urlgetByPost = `${environment.apiUrl}/activityZone/getByIdPost`;
 
 
   constructor(private http: HttpClient) {
   }
 
 
-  createPosts(postsSave: { codeDep: string[]; cityCode: number | null; hourlyWage: number; description: string; numberChild: number | null; availability: string[][] | null, ageChild: null }) {
+  createPosts(postsSave: { codeDep: string[]; cityCode: number | null; hourlyWage: number; description: string; numberChild: number | null; availability: string[][] | null, ageChild: null , listSkill: string[] | null}) {
     let token = localStorage.getItem("token");
     var header = {
       headers: new HttpHeaders()
@@ -55,4 +56,15 @@ export class PostsService {
     return this.http.get<any>(this.urlgetByPost + "/" + id, header);
 
   }
+
+  getAllPost() {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlgetByAll, header);
+  }
+
+
 }

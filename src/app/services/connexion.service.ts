@@ -149,7 +149,7 @@ export class ConnexionService {
         .set('Authorization', `Bearer ${token}`)
     }
     return new Promise<HttpEvent<any>>((resolve, reject) => {
-      this.http.get<HttpEvent<string>>(`${environment.apiUrl}/categorie/getSkillsByUserId/${id}`, header).subscribe(data => {
+        this.http.get<HttpEvent<string>>(`${environment.apiUrl}/categorie/getSkillsByPost/${id}`, header).subscribe(data => {
         resolve(data);
       }, error => {
         reject(error)

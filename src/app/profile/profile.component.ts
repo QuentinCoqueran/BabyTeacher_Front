@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
   public displayCommentBool: boolean = false;
   public listAllCategories: string[] = [];
   public displayMoreComment: boolean = false;
-  public listAllSkills: [{ category: string, id: number, skill: string }] = [{skill: '', id: -1, category: ''}];
+  public listAllSkills: any = [];
   public idToken: number = 0;
   public listAllAvaibality: [{ id: number, day: string, startHour: number, endHour: number }] = [{
     id: -1,
@@ -70,6 +70,8 @@ export class ProfileComponent implements OnInit {
   currentRate: number = 0;
   public listAllComments: any;
   private availabilityTest: string[][];
+  public displaySignalementBool: boolean = false;
+  public noComment: boolean;
 
   constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private availableService: AvailabilityService, private config: NgbRatingConfig) {
   }
@@ -247,16 +249,21 @@ export class ProfileComponent implements OnInit {
               this.listAllSkills[0] = {
                 skill: data.response[i]["name"],
                 id: data.response[i]["id"],
-                category: data.response[i]["test"]
+                category: data.response[i]["test"],
+                certified : data.response[i]["certified"],
+                detail : data.response[i]["detail"]
               };
             } else {
               this.listAllSkills.push({
                 skill: data.response[i]["name"],
                 id: data.response[i]["id"],
-                category: data.response[i]["test"]
+                category: data.response[i]["test"],
+                certified : data.response[i]["certified"],
+                detail : data.response[i]["detail"]
               });
             }
           }
+          console.log(data.response)
         } else {
           this.errorMessage = "Erreur lors de la récupération des compétences";
           this.returnError = true;
@@ -827,6 +834,8 @@ export class ProfileComponent implements OnInit {
       }, (error: any) => {
 
       }, () => {
+        this.noComment = this.listAllComments.length == 0;
+
         for (let i = 0; i < this.listAllComments.length; i++) {
           this.getUserById(this.listAllComments[i].idUserComment);
         }
@@ -877,5 +886,33 @@ export class ProfileComponent implements OnInit {
 
   addItem($event: string[][]) {
     this.availabilityTest = $event;
+  }
+
+  displaySignalement() {
+    this.displaySignalementBool = !this.displaySignalementBool;
+  }
+
+  createSignalement(value: string) {
+    if(value.length == 0){
+      this.returnError = true;
+      this.errorMessage = "Veuillez donner un commentaire";
+      return;
+    }
+    let signalement = {
+      idProfile: this.userId,
+      dateTime: new Date(),
+      idSignaler: this.idToken,
+      reason: value
+    }
+    this.availableService.createSignalement(signalement).subscribe(
+      (data: any) => {
+        if (data.response) {
+          this.displaySignalementBool = false;
+          console.log(data.response)
+        } else {
+          this.returnError = true;
+          this.errorMessage = data.message;
+        }
+      })
   }
 }
