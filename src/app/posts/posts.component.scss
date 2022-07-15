@@ -125,3 +125,17 @@ input[type=text]::placeholder, input[type=number]::placeholder {
   cursor: pointer;
   transform: scale(1.1);
 }
+
+.card-hover:hover {
+  transform: scale(1.02);
+}
+.login-post:hover {
+  cursor: pointer;
+  color: #5fbae9;
+}
+.select-disabled{
+  background: #dddddd;
+}
+.select-disabled:hover{
+  cursor: not-allowed;
+}

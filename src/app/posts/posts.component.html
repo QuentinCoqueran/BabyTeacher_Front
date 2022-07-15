@@ -24,6 +24,17 @@
           <input type="number" #numberChild placeholder="Nombre d'enfants... (max 10)"
                  min="0" max="10" oninput="this.value = this.value.replace(/[^0-9.]/g, '');
         this.value = this.value.replace(/^(?!(?:\d{1,2}|15)$)[0-9]\d+$/,15);">
+          <!-- Skills -->
+          <div class="d-flex flex-row justify-content-center">
+            <input #skill id="skill1" type="text" placeholder="Compétence">
+            <i style="margin-top: 4%; color: #39ace7" class="fa fa-check check-skill" aria-hidden="true"
+               (click)="onChangeSkills(skill.value)"></i>
+          </div>
+          <div class="d-flex flex-row">
+            <div *ngFor="let skill of listAllSkill">
+              <p> {{skill}}, </p>
+            </div>
+          </div>
           <br>
         </form>
         <br>
@@ -335,5 +346,82 @@
     <input type="submit" value="Creer" (click)="displayCreatePosts()">
     <input type="submit" value="Rechercher" (click)="displaySearchPosts()">
   </div>
-  <br>
+  <div class="d-flex flex-row justify-content-evenly m-5">
+    <select class="w-25" (change)="onChangeFilter($event,'role')" [disabled]="startSeach" [ngClass]="{'select-disabled': startSeach}">
+      <option value="null">Role</option>
+      <option value="babysitter">Babysitter</option>
+      <option value="parent">Parent</option>
+    </select>
+    <select class="w-25" (change)="onChangeFilter($event,'hourlyWage')">
+      <option value="null">Taux Horraire</option>
+      <option value="desc">Descendant</option>
+      <option value="asc">Ascendant</option>
+    </select>
+    <select class="w-25" (change)="onChangeFilter($event,'search')" [disabled]="!startSeach" [ngClass]="{'select-disabled': !startSeach}">
+      <option value="null">Recherche avancée</option>
+      <option value="false">Desactivée</option>
+    </select>
+  </div>
+  <div *ngIf="listPosts.length > 0 && !loading">
+    <div class="d-flex flex-wrap justify-content-evenly">
+      <div *ngFor="let post of listPosts">
+        <div class="card shadow card-hover" style="width: 40vh;margin: 5%; border-radius: 5%">
+          <div class="w-100 text-center d-flex flex-row justify-content-center align-items-center "
+               style="background-color:#f8f9fa;">
+            <img [src]="post.photo" alt="Card image cap" width="50" style="margin: 5%">
+            <div class="d-flex flex-column">
+              <h5 class="card-title login-post" [routerLink]="['/profile']"
+                  [queryParams]="{login:post.login}">@{{post.login}}</h5>
+              <p style="color: #92badd"><i>{{post.type}}</i></p>
+            </div>
+          </div>
+          <div class="card-body">
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" readonly [value]="post.description"
+                      style="resize: none;overflow-y: scroll;"></textarea>
+            <br>
+            <div *ngIf="post.type == 'parent'">
+              <label>Code Postal : </label>
+              <span> {{ post['city-code']}}</span>
+              <br><br>
+              <label>Taux Horraire : </label>
+              <span> {{ post['hourlyWage']}} €</span>
+              <div *ngIf="post.numberChild != null">
+                <br>
+                <label>Nombre d'enfant : </label>
+                <span> {{post.numberChild}}</span>
+              </div>
+              <div *ngIf="post.avaibality != ''">
+                <br>
+                <label>Disponibilités : </label>
+                <span *ngFor="let avaibality of post.avaibality"> {{avaibality}}</span>
+              </div>
+              <div *ngIf="post.skils != ''">
+                <br>
+                <label>Compétences : </label>
+                <ul class="list-group " *ngFor="let skill of post.skils">
+                  <li class="list-group-item d-flex flex-column">{{skill}}</li>
+                </ul>
+              </div>
+            </div>
+            <div *ngIf="post.type == 'babysitter'">
+              <label>Zone d'activité : </label>
+              <span *ngFor="let zone of post.activityZone"> {{zone}}</span>
+              <br><br>
+              <label>Taux Horraire : </label>
+              <span> {{ post['hourlyWage']}} €</span>
+            </div>
+            <br>
+            <div class="text-center w-100">
+              <a [routerLink]="['/message']"
+                 [queryParams]="{login:post.login}" class="btn btn-primary"
+                 style="background-color: #39ace7;border: none">Envoyer un message</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="listPosts.length <= 0 && !loading" class="text-center">
+    <h4>Aucun posts n'est disponible...</h4>
+  </div>
 </div>

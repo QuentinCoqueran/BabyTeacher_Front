@@ -92,4 +92,13 @@ export class AvailabilityService {
     }
     return this.http.get(`${environment.apiUrl}/comment/getByProfile/${userId}`, header);
   }
+
+  createSignalement(signalement: { idProfile: number; dateTime: Date; reason: string; idSignaler: number }) {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.post(`${environment.apiUrl}/signalement/create`, signalement, header);
+  }
 }
