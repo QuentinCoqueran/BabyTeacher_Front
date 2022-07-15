@@ -10,6 +10,7 @@ import {UpdateAvaibality} from "../models/UpdateAvaibality";
 export class AvailabilityService {
   private urlAvailabilityParse = `${environment.apiUrl}/availability/getAvailabilityParseByUserId`;
   private urlAvailabilityById = `${environment.apiUrl}/availability/getByUser`;
+  private urlAvailabilityByPostId = `${environment.apiUrl}/availability/getByPost`;
   private urlUpdateAvailabilityBabysitter = `${environment.apiUrl}/availability/updateList`;
   private insertAvailabilityBabysitter = `${environment.apiUrl}/availability/create`;
   private urlDelete = `${environment.apiUrl}/availability/delete`;
@@ -35,6 +36,15 @@ export class AvailabilityService {
         .set('Authorization', `Bearer ${token}`)
     }
     return this.http.get<any>(this.urlAvailabilityById + "/" + idUser, header);
+  }
+
+  getByPostId(idPost: number): Observable<any> {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlAvailabilityByPostId + "/" + idPost, header);
   }
 
   updateAvailabilityBabysitter(updateAvailability: UpdateAvaibality): Observable<boolean> {
