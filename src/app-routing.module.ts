@@ -14,6 +14,8 @@ import {ContractComponent} from "./app/contract/contract.component";
 import {HtmlContractComponent} from "./app/html-contract/html-contract.component";
 import {QrcodeConnexionComponent} from "./app/qrcode-connexion/qrcode-connexion.component";
 import {PostsComponent} from "./app/posts/posts.component";
+import {AdminComponent} from "./app/admin/admin.component";
+import {AdminSignalementComponent} from "./app/admin-signalement/admin-signalement.component";
 
 
 const routes: Routes = [
@@ -29,6 +31,8 @@ const routes: Routes = [
   {path: 'calendar', component: CalendarComponent},
   {path: 'qrcode-connexion', component: QrcodeConnexionComponent},
   {path: 'home', component: HomeComponent},
+  {path: 'admin', component: AdminComponent, canActivate: [AuthGuard]},
+  {path: 'admin/signalements', component: AdminSignalementComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({
