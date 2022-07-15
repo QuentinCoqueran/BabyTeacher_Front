@@ -1,11 +1,11 @@
 <div *ngIf="haveSignalements">
   <h3 class="text-center mt-5">Signalements</h3>
   <br><br>
-  <div class="d-flex flex-row justify-content-evenly">
+  <div class="d-flex flex-wrap flex-row justify-content-evenly">
     <div *ngFor="let signalement of signalements">
       <div class="card bgCardHead" style="width: 18rem;">
-        <div class="w-100 my-1 text-center bgCardHead">
-          <img [src]="photos[signalement.idProfile]" alt="Card image cap" width="125">
+        <div class="w-100 my-1 text-center bgCardPhoto">
+          <img class="img" [src]="photos[signalement.idProfile]" alt="Card image cap" width="125">
         </div>
         <div class="card-body bgCardBody">
           <div class="d-flex flex-row justify-content-between">
