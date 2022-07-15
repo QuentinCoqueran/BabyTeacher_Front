@@ -9,18 +9,50 @@ import {UpdateAvaibality} from "../models/UpdateAvaibality";
 })
 export class PostsService {
   private urlCreatePost = `${environment.apiUrl}/post/add`;
+  private urlSearchPost = `${environment.apiUrl}/post/search-post`;
+  private urlgetByiD = `${environment.apiUrl}/post/get`;
+  private urlgetByPost = `${environment.apiUrl}/activityzone/getByIdPost`;
 
 
   constructor(private http: HttpClient) {
   }
 
 
-  createPosts(postsSave: { codeDep: string[]; cityCode: number |null; hourlyWage: number; description: string; numberChild: number |null; availability: string[][] | null, ageChild: null }) {
+  createPosts(postsSave: { codeDep: string[]; cityCode: number | null; hourlyWage: number; description: string; numberChild: number | null; availability: string[][] | null, ageChild: null }) {
     let token = localStorage.getItem("token");
     var header = {
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${token}`)
     }
     return this.http.post<boolean>(this.urlCreatePost, postsSave, header);
+  }
+
+  searchPost(search: { activityZone: string[]; skill: string[]; availability: string[]; category: string[] }) {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.post<any>(this.urlSearchPost, search, header);
+  }
+
+  getPostById(idPost: number) {
+    //get
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlgetByiD + "/" + idPost, header);
+  }
+
+  getActivityZoneByPost(id: number) {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<any>(this.urlgetByPost + "/" + id, header);
+
   }
 }
