@@ -11,6 +11,7 @@ export class AdminService {
   private urlAdminIsLogin = `${environment.apiUrl}/admin`;
   private urlSignalement = `${environment.apiUrl}/admin/signalements`;
   private urlGetUSerById = `${environment.apiUrl}/admin/users`;
+  private urlGetSignalementByIdProfile = `${environment.apiUrl}/admin/signalements/profile`;
 
   constructor(private http: HttpClient) {
   }
@@ -41,6 +42,15 @@ export class AdminService {
     }
     console.log(this.urlGetUSerById + "/" + id);
     return this.http.get<UserSubscribe>(this.urlGetUSerById + "/" + id, header);
+  }
+
+  getSignalementByIdProfile(id: number){
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<Signalement[]>(this.urlGetSignalementByIdProfile + "/" + id, header);
   }
 
 

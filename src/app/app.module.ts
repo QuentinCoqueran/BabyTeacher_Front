@@ -21,6 +21,7 @@ import { QrcodeConnexionComponent } from './qrcode-connexion/qrcode-connexion.co
 import { PostsComponent } from './posts/posts.component';
 import { AdminComponent } from './admin/admin.component';
 import { AdminSignalementComponent } from './admin-signalement/admin-signalement.component';
+import { AdminSignalementProfileComponent } from './admin-signalement-profile/admin-signalement-profile.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { AdminSignalementComponent } from './admin-signalement/admin-signalement
     QrcodeConnexionComponent,
     PostsComponent,
     AdminComponent,
-    AdminSignalementComponent
+    AdminSignalementComponent,
+    AdminSignalementProfileComponent
   ],
   imports: [
     BrowserModule,
