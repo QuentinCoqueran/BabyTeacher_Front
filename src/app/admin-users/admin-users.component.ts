@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 import {AdminService} from "../services/admin.service";
-import {Router} from "@angular/router";
+import {Params, Router} from "@angular/router";
 import {User} from "../models/User";
 
 @Component({
@@ -32,9 +32,7 @@ export class AdminUsersComponent implements OnInit {
         console.log("Vous n'êtes pas admin");
         this.router.navigate(['/home']);
       }
-
     );
-
   }
 
   async getUsers() {
@@ -47,5 +45,15 @@ export class AdminUsersComponent implements OnInit {
 
       }
     );
+  }
+
+  async goToProfile(login: string) {
+    console.log("toto");
+    const queryParams: Params = {login: login};
+    await this.router.navigate(
+      ['/profile'],
+      {
+        queryParams: queryParams,
+      });
   }
 }

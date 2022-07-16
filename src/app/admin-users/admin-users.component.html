@@ -31,7 +31,7 @@
       <td *ngIf="user.description !== null">{{user.description}}</td>
       <td *ngIf="user.description === null">Aucune description</td>
       <td>
-        <button class="btn btn-md btn-primary"><i class="fa fa-eye"></i> Voir le profil</button>&nbsp;
+        <button class="btn btn-md btn-primary" (click)="goToProfile(user.login)"><i class="fa fa-eye"></i> Voir le profil</button>&nbsp;
         <button class="btn btn-md btn-danger"><i class="fa fa-ban"></i> Bannir</button>
       </td>
     </tr>
