@@ -306,7 +306,9 @@ export class PostsComponent implements OnInit {
           (data: any) => {
             post.avaibality = [];
             for (let avaibality of data.response) {
-              post.avaibality.push(avaibality.day);
+              if (!post.avaibality.includes(avaibality.day)) {
+                post.avaibality.push(avaibality.day);
+              }
             }
           });
       }
