@@ -93,4 +93,8 @@ export class AdminSignalementComponent implements OnInit {
     return undefined;
   }
 
+  goToSpecificProfile(id: number){
+    this.router.navigate(['/admin/signalements/profile'], {queryParams: {id: id}});
+  }
+
 }
