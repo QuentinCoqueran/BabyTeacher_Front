@@ -38,4 +38,8 @@ export class AdminComponent implements OnInit {
     await this.router.navigate(['/admin/signalements']);
   }
 
+  async goToUsers() {
+    await this.router.navigate(['/admin/users']);
+  }
+
 }

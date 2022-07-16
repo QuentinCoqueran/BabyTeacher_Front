@@ -1,0 +1,40 @@
+<br>
+<h1 class="text-center">Liste des utilisateurs</h1>
+<br>
+<hr>
+<div class="m-5">
+  <table datatable [dtOptions]="dtOptions" class="row-border hover">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Login</th>
+      <th>Rôle</th>
+      <th>Age</th>
+      <th>Sexe</th>
+      <th>Email</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{user.lastname}}</td>
+      <td>{{user.name}}</td>
+      <td>{{user.login}}</td>
+      <td>{{user.id_role}}</td>
+      <td>{{user.age}}</td>
+      <td *ngIf="user.sexe === 0">Non précisé</td>
+      <td *ngIf="user.sexe === 1">Homme</td>
+      <td *ngIf="user.sexe === 2">Femme</td>
+      <td>{{user.email}}</td>
+      <td *ngIf="user.description !== null">{{user.description}}</td>
+      <td *ngIf="user.description === null">Aucune description</td>
+      <td>
+        <button class="btn btn-md btn-primary"><i class="fa fa-eye"></i> Voir le profil</button>&nbsp;
+        <button class="btn btn-md btn-danger"><i class="fa fa-ban"></i> Bannir</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
