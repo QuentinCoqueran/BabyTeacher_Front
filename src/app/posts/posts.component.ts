@@ -21,28 +21,47 @@ export class PostsComponent implements OnInit {
   public idUser: number;
   public userRole: string;
   public listCommuneSelect: string[] = [];
+  public listDaysSelect: string[] = [];
+  public listCategorySelect: string[] = [];
   public errorMessage: string = "";
   public returnError = false;
 
   public nextStepCreatePostsBool: boolean = false;
-  private postsSave: { codeDep: string[]; cityCode: number | null; hourlyWage: any; description: string; numberChild: number | null; availability: null | string[][]; ageChild: null };
-  private availabilityTest: string[][];
+  private postsSave: { codeDep: string[]; cityCode: number | null; hourlyWage: any; description: string; numberChild: number | null; availability: null | string[][]; ageChild: null, listSkill: string[] | null };
+  public listAllCategories: string[] = [];
+  public listAllSkill: string[] = [];
+  public listPosts: any = [];
+  public listAllPosts: any = [];
+  public post: any = {};
+  search: boolean = false;
+  public roleFiler: string = "null";
+  public hourlyWageFiler: string = "null";
+  public searchFilter: string = "null";
+  public startSeach: boolean = false;
 
-  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private postsService: PostsService) {
+
+  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute,
+              private subscribeService: SubscribeService, private router: Router, private postsService: PostsService, private availabilityService: AvailabilityService) {
   }
 
   async ngOnInit() {
     this.loading = true;
     await this.initUserByToken();
-    this.loading = false;
+    await this.getAllPost();
+    await this.initCategories();
   }
 
   displayCreatePosts() {
     this.displayCreatePostsBool = !this.displayCreatePostsBool;
+    this.listAllSkill = [];
   }
 
   displaySearchPosts() {
     this.displaySearchPostsBool = !this.displaySearchPostsBool;
+    this.listDaysSelect = [];
+    this.listCategorySelect = [];
+    this.listCommuneSelect = [];
+    this.listAllSkill = [];
   }
 
   savePost(city: string, hourlyWage: string, description: string, numberChild: string) {
@@ -88,7 +107,8 @@ export class PostsComponent implements OnInit {
       description: description,
       numberChild: numberChildInt,
       availability: null,
-      ageChild: null
+      ageChild: null,
+      listSkill: this.listAllSkill
     };
     if (this.userRole == 'parent') {
       this.nextStepCreatePostsBool = true;
@@ -128,7 +148,7 @@ export class PostsComponent implements OnInit {
       this.returnError = true;
       return;
     }
-    if (!this.listCommuneSelect.includes($event.target.value)) {
+    if (!this.listCommuneSelect.includes($event.target.value) && $event.target.value != 0) {
       this.listCommuneSelect.push($event.target.value);
     }
   }
@@ -145,6 +165,7 @@ export class PostsComponent implements OnInit {
         this.displayCreatePostsBool = false;
         this.displaySearchPostsBool = false;
         this.listCommuneSelect = [];
+        this.listAllSkill = [];
       }
     );
   }
@@ -152,5 +173,210 @@ export class PostsComponent implements OnInit {
   addItem($event: string[][]) {
     this.postsSave.availability = $event;
   }
+
+  onChangeSelectAvaibalitySearch($event: any) {
+    if (!this.listDaysSelect.includes($event.target.value) && $event.target.value != 0) {
+      this.listDaysSelect.push($event.target.value);
+    }
+  }
+
+  onChangeSelectCategory($event: any) {
+    if (!this.listCategorySelect.includes($event.target.value) && $event.target.value != 0) {
+      this.listCategorySelect.push($event.target.value);
+    }
+  }
+
+  private initCategories() {
+    this.listAllCategories = [];
+    this.subscribeService.initCategories().subscribe(
+      (data: any) => {
+        for (let elem of data.response) {
+          this.listAllCategories.push(elem.name);
+        }
+      }, (error: any) => {
+        this.returnError = true;
+        this.errorMessage = "Une erreur est survenue " + error;
+      });
+  }
+
+  onChangeSkills(value: string) {
+    if (this.listAllSkill.length > 5) {
+      this.errorMessage = "Vous ne pouvez specifier que 5 compétences maximum";
+      this.returnError = true;
+      return;
+    }
+    if (!this.listAllSkill.includes(value) && value != "") {
+      this.listAllSkill.push(value);
+      let input = document.getElementById('skill') as HTMLInputElement | null;
+      if (input != null) {
+        input.value = "";
+      }
+      let input1 = document.getElementById('skill1') as HTMLInputElement | null;
+      if (input1 != null) {
+        input1.value = "";
+      }
+    }
+  }
+
+  searchPost() {
+    this.loading = true;
+    this.listPosts = [];
+
+    if (this.listDaysSelect.length == 0 || this.listCategorySelect.length == 0 || this.listAllSkill.length == 0 || this.listCommuneSelect.length == 0) {
+      this.errorMessage = "Vous devez remplir tous les champs";
+      this.returnError = true;
+      return;
+    }
+    this.roleFiler = "null";
+    this.hourlyWageFiler = "null";
+    this.startSeach = true;
+
+    let search = {
+      availability: this.listDaysSelect,
+      category: this.listCategorySelect,
+      skill: this.listAllSkill,
+      activityZone: this.listCommuneSelect
+    }
+
+    this.postsService.searchPost(search).subscribe(
+      (data1: any) => {
+        for (let idPost of data1.response) {
+          //get postbyid
+          this.postsService.getPostById(idPost).subscribe(
+            async (data2: any) => {
+              this.post = data2.response;
+              this.listPosts.push(this.post);
+              if (this.listPosts.length == data1.response.length) {
+                if (this.userRole == 'parent') {
+                  await this.addActivityZoneByPost();
+                  await this.addSkillByUser();
+                }
+                if (this.userRole == 'babysitter') {
+                  await this.addAvaibality();
+                }
+                await this.addDateUser();
+              }
+            });
+        }
+        this.listAllPosts = this.listPosts;
+        this.displaySearchPosts();
+        this.loading = false;
+      }
+    );
+  }
+
+  addActivityZoneByPost() {
+
+    //get acitvity zone by post
+    for (let post of this.listPosts) {
+      if (post.type == 'babysitter') {
+        this.postsService.getActivityZoneByPost(post.id).subscribe(
+          (data: any) => {
+            post.activityZone = [];
+            for (let activityZone of data.response) {
+              post.activityZone.push(activityZone.codeDep);
+            }
+          });
+      }
+    }
+
+  }
+
+  addSkillByUser() {
+    //get acitvity zone by post
+    for (let post of this.listPosts) {
+      if (post.type == 'parent') {
+        this.authService.getSkillsByUserId(post.id).then(
+          (data: any) => {
+            post.skils = [];
+            for (let skill of data.response) {
+              post.skils.push(skill.name);
+            }
+          });
+      }
+    }
+
+  }
+
+  private async addAvaibality() {
+    //get acitvity zone by post
+    for (let post of this.listPosts) {
+      if (post.type == 'parent') {
+        this.availabilityService.getByPostId(post.id).subscribe(
+          (data: any) => {
+            post.avaibality = [];
+            for (let avaibality of data.response) {
+              post.avaibality.push(avaibality.day);
+            }
+          });
+      }
+    }
+  }
+
+  private async addDateUser() {
+    //get acitvity zone by post
+    for (let post of this.listPosts) {
+      this.authService.getUserById(post.idUser).then(
+        (data: any) => {
+          console.log(data.response);
+          post.login = data.response[0].login;
+          if (data.response[0].photo != null) {
+            post.photo = data.response[0].photo;
+          } else {
+            post.photo = "../../assets/avatar.png";
+          }
+          this.loading = false;
+          console.log(this.listPosts)
+        });
+    }
+  }
+
+  private async getAllPost() {
+    //get acitvity zone by post
+    this.postsService.getAllPost().subscribe(
+      async (data: any) => {
+        this.listPosts = data.response;
+        this.listAllPosts = data.response;
+        await this.addActivityZoneByPost();
+        await this.addSkillByUser();
+        await this.addAvaibality();
+        await this.addDateUser();
+      }
+    );
+  }
+
+  onChangeFilter($event: any, type: string) {
+    this.listPosts = this.listAllPosts;
+    switch (type) {
+      case"role":
+        this.roleFiler = $event.target.value;
+        break;
+      case"hourlyWage":
+        this.hourlyWageFiler = $event.target.value;
+        break;
+      case "search":
+        this.search = $event.target.value;
+        break;
+      default:
+        return;
+    }
+
+    if (this.roleFiler == "babysitter") {
+      this.listPosts = this.listPosts.filter(post => post.type == "babysitter");
+    } else if (this.roleFiler == "parent") {
+      this.listPosts = this.listPosts.filter(post => post.type == "parent");
+    }
+
+    if (this.hourlyWageFiler == "asc") {
+      this.listPosts = this.listPosts.sort((a, b) => a.hourlyWage - b.hourlyWage);
+    } else if (this.hourlyWageFiler == "desc") {
+      this.listPosts = this.listPosts.sort((a, b) => b.hourlyWage - a.hourlyWage);
+    }
+    if (this.searchFilter == "null") {
+      this.startSeach = false;
+      this.getAllPost();
+    }
+  }
+
 
 }

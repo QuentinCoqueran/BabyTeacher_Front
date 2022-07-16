@@ -1,6 +1,25 @@
+<div *ngIf="displaySignalementBool" class="bg-modal">
+  <div class="popup d-flex flex-column">
+    <h4 class="text-center">Signaler un utilisateur</h4>
+    <br>
+    <div class="d-flex flex-column">
+      <label for="">Raison du signalement</label>
+      <textarea #txt class="form-control" name="raison" id="" rows="3" style="width: 100%"></textarea>
+    </div>
+    <br>
+    <div class="d-flex flex-row justify-content-center">
+      <input type="submit" value="Envoyer" (click)="createSignalement(txt.value)">
+      <input type="submit" value="Annuler" style="margin-left: 5%" (click)="displaySignalement()">
+    </div>
+    <br>
+  </div>
+</div>
+
 <div class="spinner" ng-show="loading" *ngIf="loading">
   <img src="http://w3lessons.info/demo/jquery-preloader/ajax-loader.gif"/>
 </div>
+
+
 <div class="container">
   <div class="main-body">
     <p *ngIf="returnError">
@@ -20,6 +39,10 @@
                 <h4>@{{user['login']}}</h4>
                 <p class="text-secondary mb-1">{{user['role']}}</p>
                 <p class="text-muted font-size-sm" *ngIf="user['description'] != 'null'">{{user['description']}}</p>
+                <p class="fadeIn fourth signalement" *ngIf="!samePeople" (click)="displaySignalement()"><i
+                  class="fa fa-exclamation"
+                  aria-hidden="true"></i><i> Signaler un
+                  problème</i></p>
                 <input type="submit" value="Message" [routerLink]="['/message']"
                        [queryParams]="{login:user['login']}" *ngIf='!samePeople'>
               </div>
@@ -45,10 +68,12 @@
             <br>
             <br>
           </div>
-          <span class="displayAll" (click)="displayAllComment()"
-                *ngIf="!displayMoreComment"><i>Tout afficher...</i></span>
-          <span class="displayAll" (click)="displayAllComment()"
-                *ngIf="displayMoreComment"><i>Cacher...</i></span>
+          <div *ngIf="!noComment">
+            <span class="displayAll" (click)="displayAllComment()"
+                  *ngIf="!displayMoreComment"><i>Tout afficher...</i></span>
+              <span class="displayAll" (click)="displayAllComment()"
+                    *ngIf="displayMoreComment"><i>Cacher...</i></span>
+          </div>
           <br>
           <br>
           <div>
@@ -87,7 +112,10 @@
             <div *ngIf="displaySkillsListBool">
               <ul class="list-group d-flex" *ngIf="!modificationSkillsBool">
                 <li class="list-group-item" *ngFor="let skill of listAllSkills">
-                  <span class="float-lg-start">{{skill.skill}}</span>
+                  <span class="float-lg-start">{{skill.skill}} </span>
+                  <i class="fa fa-check-circle-o" aria-hidden="true" *ngIf="skill.certified"
+                     style="margin-left: 2%; color: #1e911e" ngbPopover="{{skill.detail}}"
+                     triggers="mouseenter:mouseleave" popoverTitle="Certification"></i>
                   <span class="float-end">{{skill.category}}</span>
                 </li>
               </ul>

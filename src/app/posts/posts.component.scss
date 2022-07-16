@@ -69,7 +69,7 @@ input[type=button]:active, input[type=submit]:active, input[type=reset]:active {
   border-radius: .25rem;
 }
 
-input[type=text], input[type=number] ,select{
+input[type=text], input[type=number], select {
   background-color: #f6f6f6;
   border: none;
   color: #0d0d0d;
@@ -119,4 +119,23 @@ input[type=text]::placeholder, input[type=number]::placeholder {
   margin-left: -32px; /* -1 * image width / 2 */
   margin-top: -32px; /* -1 * image height / 2 */
   display: block;
+}
+
+.check-skill:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.card-hover:hover {
+  transform: scale(1.02);
+}
+.login-post:hover {
+  cursor: pointer;
+  color: #5fbae9;
+}
+.select-disabled{
+  background: #dddddd;
+}
+.select-disabled:hover{
+  cursor: not-allowed;
 }
