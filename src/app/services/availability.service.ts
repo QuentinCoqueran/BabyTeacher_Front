@@ -15,6 +15,7 @@ export class AvailabilityService {
   private insertAvailabilityBabysitter = `${environment.apiUrl}/availability/create`;
   private urlDelete = `${environment.apiUrl}/availability/delete`;
   private urlComment = `${environment.apiUrl}/comment/create`;
+  private urlCreateCertified = `${environment.apiUrl}/categorie/certifySkill`;
 
   constructor(private http: HttpClient) {
   }
@@ -100,5 +101,14 @@ export class AvailabilityService {
         .set('Authorization', `Bearer ${token}`)
     }
     return this.http.post(`${environment.apiUrl}/signalement/create`, signalement, header);
+  }
+
+  createCertified(certified: { idDiplome: string; userName: string }, skillId: number) {
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.post<any>(this.urlCreateCertified+ "/"+ skillId, certified, header);
   }
 }

@@ -71,7 +71,11 @@ export class ProfileComponent implements OnInit {
   public listAllComments: any;
   private availabilityTest: string[][];
   public displaySignalementBool: boolean = false;
-  public noComment: boolean;
+  public noComment: boolean = true;
+  public displayCertifiedBool: boolean = false;
+  public skillId: number;
+  public returnSucces: boolean = false;
+  public success: string ="success";
 
   constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private availableService: AvailabilityService, private config: NgbRatingConfig) {
   }
@@ -177,6 +181,7 @@ export class ProfileComponent implements OnInit {
 
   closeAlert() {
     this.returnError = false;
+    this.returnSucces = false;
   }
 
   modificationUser() {
@@ -250,16 +255,16 @@ export class ProfileComponent implements OnInit {
                 skill: data.response[i]["name"],
                 id: data.response[i]["id"],
                 category: data.response[i]["test"],
-                certified : data.response[i]["certified"],
-                detail : data.response[i]["detail"]
+                certified: data.response[i]["certified"],
+                detail: data.response[i]["detail"]
               };
             } else {
               this.listAllSkills.push({
                 skill: data.response[i]["name"],
                 id: data.response[i]["id"],
                 category: data.response[i]["test"],
-                certified : data.response[i]["certified"],
-                detail : data.response[i]["detail"]
+                certified: data.response[i]["certified"],
+                detail: data.response[i]["detail"]
               });
             }
           }
@@ -893,7 +898,7 @@ export class ProfileComponent implements OnInit {
   }
 
   createSignalement(value: string) {
-    if(value.length == 0){
+    if (value.length == 0) {
       this.returnError = true;
       this.errorMessage = "Veuillez donner un commentaire";
       return;
@@ -913,6 +918,36 @@ export class ProfileComponent implements OnInit {
           this.returnError = true;
           this.errorMessage = data.message;
         }
+      })
+  }
+
+  displayCertified(idSkill: number) {
+    this.displayCertifiedBool = !this.displayCertifiedBool;
+    this.skillId = idSkill;
+  }
+
+  createCertified(lastname: string, pass: string) {
+    this.loading = true;
+    let certified = {
+      userName: lastname[0].toUpperCase() + lastname.slice(1),
+      idDiplome: pass,
+    }
+    this.availableService.createCertified(certified, this.skillId).subscribe(
+      async (data: any) => {
+        this.loading = false;
+        if (data.response) {
+          await this.initSkills();
+          await this.displayCertified(this.skillId);
+          this.returnSucces = true;
+          this.errorMessage = "Certification du diplome validée";
+        } else {
+          this.returnError = true;
+          this.errorMessage = "Erreure avec la certification du diplome";
+        }
+      }, (error: any) => {
+        this.returnError = true;
+        this.errorMessage = "Erreure avec la certification du diplome";
+        this.loading = false;
       })
   }
 }
