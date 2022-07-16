@@ -3,6 +3,7 @@ import {environment} from "../../environments/environment";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Signalement} from "../models/Signalement";
 import {UserSubscribe} from "../models/UserSubscribe";
+import {User} from "../models/User";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class AdminService {
   private urlSignalement = `${environment.apiUrl}/admin/signalements`;
   private urlGetUSerById = `${environment.apiUrl}/admin/users`;
   private urlGetSignalementByIdProfile = `${environment.apiUrl}/admin/signalements/profile`;
+  private urlGetAllUsers = `${environment.apiUrl}/admin/users`;
 
   constructor(private http: HttpClient) {
   }
@@ -53,5 +55,13 @@ export class AdminService {
     return this.http.get<Signalement[]>(this.urlGetSignalementByIdProfile + "/" + id, header);
   }
 
+  getUsers(){
+    let token = localStorage.getItem("token");
+    var header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    return this.http.get<User[]>(this.urlGetAllUsers, header);
+  }
 
 }

@@ -17,6 +17,7 @@ import {PostsComponent} from "./app/posts/posts.component";
 import {AdminComponent} from "./app/admin/admin.component";
 import {AdminSignalementComponent} from "./app/admin-signalement/admin-signalement.component";
 import {AdminSignalementProfileComponent} from "./app/admin-signalement-profile/admin-signalement-profile.component";
+import {AdminUsersComponent} from "./app/admin-users/admin-users.component";
 
 
 const routes: Routes = [
@@ -34,7 +35,8 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'admin', component: AdminComponent, canActivate: [AuthGuard]},
   {path: 'admin/signalements', component: AdminSignalementComponent, canActivate: [AuthGuard]},
-  {path: 'admin/signalements/profile', component: AdminSignalementProfileComponent, canActivate: [AuthGuard]}
+  {path: 'admin/signalements/profile', component: AdminSignalementProfileComponent, canActivate: [AuthGuard]},
+  {path: 'admin/users', component: AdminUsersComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
