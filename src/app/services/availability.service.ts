@@ -11,7 +11,7 @@ export class AvailabilityService {
   private urlAvailabilityParse = `${environment.apiUrl}/availability/getAvailabilityParseByUserId`;
   private urlAvailabilityById = `${environment.apiUrl}/availability/getByUser`;
   private urlAvailabilityByPostId = `${environment.apiUrl}/availability/getByPost`;
-  private urlUpdateAvailabilityBabysitter = `${environment.apiUrl}/availability/updateList`;
+  private urlUpdateAvailabilityBabysitter = `${environment.apiUrl}/availability/create`;
   private insertAvailabilityBabysitter = `${environment.apiUrl}/availability/create`;
   private urlDelete = `${environment.apiUrl}/availability/delete`;
   private urlComment = `${environment.apiUrl}/comment/create`;
@@ -54,7 +54,7 @@ export class AvailabilityService {
       headers: new HttpHeaders()
         .set('Authorization', `Bearer ${token}`)
     }
-    return this.http.put<boolean>(this.urlUpdateAvailabilityBabysitter, updateAvailability, header);
+    return this.http.post<boolean>(this.urlUpdateAvailabilityBabysitter, updateAvailability, header);
   }
 
   insertAvailability(avaibality: {}): Observable<boolean> {
