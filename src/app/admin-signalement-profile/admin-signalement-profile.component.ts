@@ -20,17 +20,20 @@ export class AdminSignalementProfileComponent implements OnInit {
 
   constructor(private adminService: AdminService, private route: ActivatedRoute, private router: Router) { }
 
-  async ngOnInit(){
-    await this.initUserAdmin();
+  ngOnInit(): void{
+
     this.route.queryParams.subscribe(async params => {
       this.idProfile = params['id'];
     });
 
-    await this.getUserProfile(this.idProfile)
-    await this.getSignalementByProfile(this.idProfile)
+    this.initUserAdmin()
+    this.getUserProfile(this.idProfile)
+    this.getSignalementByProfile(this.idProfile).then(async () => {
+      await this.initUserSignalements();
+    })
   }
 
-  async initUserAdmin(): Promise<void> {
+  async initUserAdmin(){
     await this.adminService.isUserLogin().subscribe(
       (data: any) => {
       }, (error: any) => {
@@ -40,30 +43,35 @@ export class AdminSignalementProfileComponent implements OnInit {
     );
   }
 
-  async getSignalementByProfile(idProfile: number): Promise<void> {
+  async getSignalementByProfile(idProfile: number){
+
     await this.adminService.getSignalementByIdProfile(idProfile).subscribe({
       next: async (data: Signalement[]) => {
         this.signalements = data["response"];
         this.haveSignalements = true;
-
-        for (let signalement of this.signalements) {
-          await this.adminService.getUserById(signalement.idSignaler).subscribe({
-            next: (data: UserSubscribe) => {
-              this.usersInfo[signalement.idSignaler] = data["user"];
-            }, error: (error: any) => {
-              console.log("Pas de profil: " + error);
-            }
-          });
-        }
       },error: (error: any) => {
         console.log("Pas de signalement: " + error);
       }
     });
 
+
   }
 
+  async initUserSignalements(){
+    for (let signalement of this.signalements) {
+      await this.adminService.getUserById(signalement.idSignaler).subscribe({
+        next: (data: UserSubscribe) => {
+          this.usersInfo[signalement.idSignaler] = data["user"];
+        }, error: (error: any) => {
+          console.log("Pas de profil: " + error);
+        }
+      });
+    }
+  }
+
+
   async getUserProfile(idProfile: number): Promise<void> {
-    this.adminService.getUserById(idProfile).subscribe({
+    await this.adminService.getUserById(idProfile).subscribe({
       next: (data: UserSubscribe) => {
         this.userProfile = data["user"];
       },error: (error: any) => {
@@ -72,9 +80,9 @@ export class AdminSignalementProfileComponent implements OnInit {
     });
   }
 
-  goToSpecificProfile(id: number){
+  async goToSpecificProfile(id: number){
     console.log(id);
-    this.router.navigate(['/profile'], {queryParams: {login: id}});
+    await this.router.navigate(['/profile'], {queryParams: {login: id}});
   }
 
 }

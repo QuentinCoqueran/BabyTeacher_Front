@@ -23,8 +23,9 @@ export class AdminSignalementComponent implements OnInit {
   constructor(private adminService: AdminService, private router: Router) { }
 
   async ngOnInit(){
-    await this.initUserAdmin()
-    await this.getSignalements();
+    await this.initUserAdmin().then(async () => {
+      await this.getSignalements();
+    });
   }
 
   async initUserAdmin(){
