@@ -347,8 +347,12 @@ export class ProfileComponent implements OnInit {
         (data: any) => {
           //navigate to the next page
           if (data.response) {
+            this.returnSucces = true;
+            this.errorMessage = "Compétences ajoutées avec succès";
+            this.displaySkillsList()
             this.modificationSkillsBool = false;
             this.addSkillBool = false;
+
           } else {
             this.returnError = true;
             this.errorMessage = data.message;
@@ -897,7 +901,9 @@ export class ProfileComponent implements OnInit {
       (data: any) => {
         //navigate to the next page
         if (data) {
-          console.log(data)
+          this.returnSucces = true;
+          this.errorMessage = "Votre disponibilité a été mise à jour";
+          this.displayAgenda()
         } else {
           console.log("error")
         }
@@ -928,7 +934,6 @@ export class ProfileComponent implements OnInit {
       (data: any) => {
         if (data.response) {
           this.displaySignalementBool = false;
-          console.log(data.response)
         } else {
           this.returnError = true;
           this.errorMessage = data.message;
@@ -980,7 +985,6 @@ export class ProfileComponent implements OnInit {
             await this.addActivityZoneByPost();
             await this.addSkillByUser();
             await this.addAvaibalityPosts();
-            console.log(this.listPosts)
           }
         } else {
           this.noPost = true;

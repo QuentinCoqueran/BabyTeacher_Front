@@ -184,8 +184,8 @@
                   </div>
                 </li>
               </ul>
-              <div *ngIf="addSkillBool">
-                <input (change)="onChangeSkill($event,-1,-1)" type="text" class="float-lg-start">
+              <div *ngIf="addSkillBool" class="d-flex flex-row justify-content-evenly">
+                <input (change)="onChangeSkill($event,-1,-1)" type="text" class="float-lg-start" placeholder="Compétence">
                 <select (change)="onChangeCategorie($event,-1,-1)" class="fadeIn second float-end">
                   <option value=""></option>
                   <option *ngFor="let elem of listAllCategories">{{elem}}</option>
@@ -326,30 +326,9 @@
             <div *ngIf="displayAgendaBool && !addAvaibalityBool && !modificationAvaibalityBool" style="height: 10vh">
               <app-calendar [item]=false></app-calendar>
               <div class="d-flex flex-row justify-content-center">
-                <input type="submit" value="Ajouter" (click)="addAvaibality()" *ngIf='samePeople'>
                 <input style="margin-left: 3% " type="submit" value="Modifier" (click)="modificationAvailability()"
                        *ngIf='samePeople'>
               </div>
-            </div>
-            <div *ngIf="displayAgendaBool && addAvaibalityBool && !modificationAvaibalityBool"
-                 style="height: 10vh; text-align: center">
-              <div class="d-flex flex-row justify-content-between">
-                <select (change)="onChangeDay($event,-1,-1)" class="float-end">
-                  <option value=""></option>
-                  <option *ngFor="let elem of listAllDay">{{elem}}</option>
-                </select>
-                <select (change)="onChangeHourStart($event,-1,-1)" class="float-end">
-                  <option value=""></option>
-                  <option *ngFor="let elem of listAllHour">{{elem}}</option>
-                </select>
-                <select (change)="onChangeHourEnd($event,-1,-1)" class="float-end">
-                  <option value=""></option>
-                  <option *ngFor="let elem of listAllHour">{{elem}}</option>
-                </select>
-              </div>
-              <br>
-              <input type="submit" value="Enregistrer" (click)="insertAvaibality()" *ngIf='samePeople'>
-              <input style="margin-left: 3% " type="submit" value="Annuler" (click)="cancel()" *ngIf='samePeople'>
             </div>
             <div *ngIf="displayAgendaBool && !addAvaibalityBool && modificationAvaibalityBool" style="height: 10vh">
               <app-calendar [item]=true (newItemEvent)="addItem($event)"></app-calendar>

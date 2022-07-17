@@ -3,6 +3,11 @@
     <strong>Attention !</strong> {{errorMessage}}.
   </ngb-alert>
 </p>
+<p *ngIf="returnSucces">
+  <ngb-alert [type]='success' (closed)="closeAlert()">
+    <strong>Merci !</strong> {{errorMessage}}.
+  </ngb-alert>
+</p>
 <div class="spinner" ng-show="loading" *ngIf="loading">
   <img src="http://w3lessons.info/demo/jquery-preloader/ajax-loader.gif"/>
 </div>
