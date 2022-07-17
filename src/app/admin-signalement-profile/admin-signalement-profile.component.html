@@ -26,17 +26,16 @@
         <div class="card bgCardHead" style="width: 18rem;">
           <div class="w-100 text-center d-flex flex-row justify-content-center align-items-center "
                style="background-color:#f8f9fa;">
-            <img src="../../assets/avatar.png" alt="Card image cap" width="50" style="margin: 5%">
+            <img [src]="usersInfo[signalement.idSignaler].photo" alt="Card image cap" width="50" style="margin: 5%">
             <div class="d-flex flex-column" *ngIf="loginLoaded">
-              <h5 class="card-title login-signalement" *ngIf="loginLoaded" [routerLink]="['/admin/users/profile']"
-                  [queryParams]="{id:signalement.idSignaler}">@{{usersInfo[signalement.idSignaler].login}}</h5>
+              <h5 class="card-title login-signalement" *ngIf="loginLoaded" (click)="goToSpecificProfile(signalement.idSignaler)">@{{usersInfo[signalement.idSignaler].login}}</h5>
               <p style="color: #92badd"><i>{{usersInfo[signalement.idSignaler].name}} {{usersInfo[signalement.idSignaler].lastname}}</i></p>
             </div>
           </div>
           <div class="card-body" style="background-color: white">
             <div>
               <p>raison: {{signalement.reason}}</p>
-              <p>date: {{signalement.dateTime}}</p>
+              <p *ngIf="signalement.id">date: {{dateInfo[signalement.id]}}</p>
             </div>
           </div>
         </div>

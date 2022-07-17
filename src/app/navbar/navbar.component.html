@@ -34,7 +34,7 @@
         <button ngbDropdownItem [routerLink]="['/profile']"
                 [queryParams]="{login:loginUser}">Profil
         </button>
-        <button ngbDropdownItem [routerLink]="['/contrat']">Contrats
+        <button ngbDropdownItem [routerLink]="['/contrat']" *ngIf="roleUser !== 'admin'" >Contrats
         </button>
         <button ngbDropdownItem (click)="isDeconnected()">Deconnexion</button>
       </div>
