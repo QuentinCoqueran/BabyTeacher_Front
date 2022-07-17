@@ -30,6 +30,13 @@ export class SubscribeUserComponent implements OnInit {
       email.trim() != "" && this.role === "parent") || (pseudo.trim() != "" && password.trim() != "" && lastname.trim() != "" && name.trim() != "" &&
       email.trim() != "" && age != null && this.sexe != null && this.role === "babysitter")) {
 
+      const emailRegexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+      if(!emailRegexp.test(email) ){
+        this.errorMessage = "Email invalide";
+        this.returnError = true;
+        return;
+      }
+
       if (this.role === "babysitter" && age && parseInt(age) < 16) {
         this.errorMessage = "Age minimum 16 ans"
         this.returnError = true;
