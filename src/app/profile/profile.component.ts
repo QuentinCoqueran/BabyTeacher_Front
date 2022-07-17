@@ -8,6 +8,8 @@ import {AvailabilityService} from "../services/availability.service";
 import {UpdateAvaibality} from "../models/UpdateAvaibality";
 import {NgbRatingConfig} from "@ng-bootstrap/ng-bootstrap";
 import {PostsService} from "../services/posts.service";
+import {AdminService} from "../services/admin.service";
+import {User} from "../models/User";
 
 @Component({
   selector: 'app-profile',
@@ -40,6 +42,7 @@ export class ProfileComponent implements OnInit {
   public displayMoreComment: boolean = false;
   public listAllSkills: any = [];
   public idToken: number = 0;
+  public userBan: User;
   public listAllAvaibality: [{ id: number, day: string, startHour: number, endHour: number }] = [{
     id: -1,
     day: '',
@@ -82,11 +85,12 @@ export class ProfileComponent implements OnInit {
   public noPost: boolean = false;
   public displayUpdatePost: boolean = false;
   public idPostUpdate: number;
+  public roleByToken: string;
 
   constructor(private authService: ConnexionService, private updateUserService: SubscribeService,
               private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router,
               private availableService: AvailabilityService, private config: NgbRatingConfig,
-              private postsService: PostsService) {
+              private postsService: PostsService, private adminService: AdminService) {
   }
 
   ngOnInit(): void {
@@ -119,6 +123,7 @@ export class ProfileComponent implements OnInit {
           this.idToken = Object.values(userService)[i];
         }
       }
+      this.roleByToken = await this.initRole(this.idToken);
     } else {
       await this.router.navigate(['/login']);
       return;
@@ -171,21 +176,21 @@ export class ProfileComponent implements OnInit {
           }
         }
       }
-      await this.initRole();
+      this.user.role = await this.initRole(this.userId);
     } else {
       await this.router.navigate(['/login']);
       return;
     }
   }
 
-  async initRole() {
-    let role = await this.authService.getRoleByToken(this.userId);
+  async initRole(id: number): Promise<string> {
+    let role = await this.authService.getRoleByToken(id);
     if (role) {
-      this.user.role = Object.values(role)[0]['role'];
+      return Object.values(role)[0]['role'];
     } else {
-      this.user.role = "";
       this.errorMessage = "Veuillez vous reconnecter";
       this.returnError = true;
+      return "";
     }
   }
 
@@ -966,6 +971,7 @@ export class ProfileComponent implements OnInit {
       async (data: any) => {
         if (data.response) {
           this.listPosts = data.response;
+          console.log(this.listPosts.length)
           if (this.listPosts.length == 0) {
             this.noPost = true;
           } else {
@@ -978,6 +984,8 @@ export class ProfileComponent implements OnInit {
         } else {
           this.noPost = true;
         }
+      }, (error: any) => {
+        this.noPost = true;
       });
   }
 
@@ -1073,4 +1081,22 @@ export class ProfileComponent implements OnInit {
     }
     this.idPostUpdate = id;
   }
+
+  async banUser(id: number) {
+    await this.adminService.banUser(id).subscribe(
+      (data: any) => {
+        this.ngOnInit();
+      }, (error: any) => {
+      }
+    );
+  }
+  async unBanUser(id: number) {
+    await this.adminService.unBanUser(id).subscribe(
+      (data: any) => {
+        this.ngOnInit();
+      }, (error: any) => {
+      }
+    );
+  }
+
 }

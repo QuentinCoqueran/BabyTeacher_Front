@@ -348,7 +348,7 @@
   </div>
   <div class="d-flex flex-row justify-content-evenly m-5">
     <select class="w-25" (change)="onChangeFilter($event,'role')" [disabled]="startSeach" [ngClass]="{'select-disabled': startSeach}">
-      <option value="null">Role</option>
+      <option value="null" [selected]="startSeach">Role</option>
       <option value="babysitter">Babysitter</option>
       <option value="parent">Parent</option>
     </select>
@@ -357,8 +357,8 @@
       <option value="desc">Descendant</option>
       <option value="asc">Ascendant</option>
     </select>
-    <select class="w-25" (change)="onChangeFilter($event,'search')" [disabled]="!startSeach" [ngClass]="{'select-disabled': !startSeach}">
-      <option value="null">Recherche avancée</option>
+    <select id="advenced-search" class="w-25" (change)="onChangeFilter($event,'search')" [disabled]="!startSeach" [ngClass]="{'select-disabled': !startSeach}">
+      <option value="null" [selected]="!startSeach">Recherche avancée</option>
       <option value="false">Desactivée</option>
     </select>
   </div>

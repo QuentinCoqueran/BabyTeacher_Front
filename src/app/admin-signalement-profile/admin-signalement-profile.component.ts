@@ -12,43 +12,69 @@ import {UserSubscribe} from "../models/UserSubscribe";
 export class AdminSignalementProfileComponent implements OnInit {
 
   public haveSignalements: boolean = false;
-  public allSignalements: Signalement[] = [];
+  public signalements: Signalement[] = [];
   public idProfile: number;
   public userProfile: UserSubscribe;
+  public usersInfo: UserSubscribe[] = [];
+  public isLoaded: boolean = false;
 
-  constructor(private adminService: AdminService, private route: ActivatedRoute) { }
+  constructor(private adminService: AdminService, private route: ActivatedRoute, private router: Router) { }
 
-  ngOnInit(): void {
+  async ngOnInit(){
+    await this.initUserAdmin();
     this.route.queryParams.subscribe(async params => {
       this.idProfile = params['id'];
     });
 
-    this.getUserProfile(this.idProfile).then(r => {});
-    this.getSignalementByProfile(this.idProfile).then(r => {});
+    await this.getUserProfile(this.idProfile)
+    await this.getSignalementByProfile(this.idProfile)
   }
 
-  async getSignalementByProfile(idProfile: number){
-    console.log(idProfile);
-    this.adminService.getSignalementByIdProfile(idProfile).subscribe({
-      next: (data: Signalement[]) => {
-        this.allSignalements = data;
+  async initUserAdmin(): Promise<void> {
+    await this.adminService.isUserLogin().subscribe(
+      (data: any) => {
+      }, (error: any) => {
+        console.log("Vous n'êtes pas admin");
+        this.router.navigate(['/home']);
+      }
+    );
+  }
+
+  async getSignalementByProfile(idProfile: number): Promise<void> {
+    await this.adminService.getSignalementByIdProfile(idProfile).subscribe({
+      next: async (data: Signalement[]) => {
+        this.signalements = data["response"];
         this.haveSignalements = true;
-        console.log(this.allSignalements);
+
+        for (let signalement of this.signalements) {
+          await this.adminService.getUserById(signalement.idSignaler).subscribe({
+            next: (data: UserSubscribe) => {
+              this.usersInfo[signalement.idSignaler] = data["user"];
+            }, error: (error: any) => {
+              console.log("Pas de profil: " + error);
+            }
+          });
+        }
       },error: (error: any) => {
         console.log("Pas de signalement: " + error);
       }
     });
+
   }
 
-  async getUserProfile(idProfile: number){
+  async getUserProfile(idProfile: number): Promise<void> {
     this.adminService.getUserById(idProfile).subscribe({
       next: (data: UserSubscribe) => {
         this.userProfile = data["user"];
-        console.log(this.userProfile.photo);
       },error: (error: any) => {
         console.log("Pas de profil: " + error);
       }
     });
+  }
+
+  goToSpecificProfile(id: number){
+    console.log(id);
+    this.router.navigate(['/profile'], {queryParams: {login: id}});
   }
 
 }

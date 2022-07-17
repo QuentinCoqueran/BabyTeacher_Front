@@ -15,11 +15,6 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.initUserAdmin();
-    this.initPage();
-  }
-
-  async initPage() {
-
   }
 
   async initUserAdmin() {
