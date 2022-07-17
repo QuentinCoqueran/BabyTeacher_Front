@@ -13,6 +13,7 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 export class NavbarComponent implements OnInit {
   public isConnectedBool: boolean = false;
   public loginUser: string = "";
+  public roleUser: string = "";
   constructor(private authService: ConnexionService, private router: Router, private route: ActivatedRoute) {
   }
 
@@ -68,6 +69,14 @@ export class NavbarComponent implements OnInit {
         this.pictureProfile = Object.values(user)[8];
       }else{
         this.pictureProfile = "../assets/avatar.png";
+        console.log("no picture");
+      }
+
+      let idUser = Object.values(user)[0];
+      let role = await this.authService.getRole(idUser);
+      if(role) {
+        this.roleUser = role[0].role;
+        console.log(this.roleUser);
       }
 
       this.loginUser = Object.values(user)[4];
