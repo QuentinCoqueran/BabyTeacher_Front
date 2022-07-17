@@ -36,7 +36,7 @@ const routes: Routes = [
   {path: 'admin', component: AdminComponent, canActivate: [AuthGuard]},
   {path: 'admin/signalements', component: AdminSignalementComponent, canActivate: [AuthGuard]},
   {path: 'admin/signalements/profile', component: AdminSignalementProfileComponent, canActivate: [AuthGuard]},
-  {path: 'admin/users', component: AdminUsersComponent, canActivate: [AuthGuard]}
+  {path: 'admin/users', component: AdminUsersComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({
