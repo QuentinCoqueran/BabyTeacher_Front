@@ -7,11 +7,12 @@ import {UpdateBabysitter} from "../models/UpdateBabysitter";
 import {AvailabilityService} from "../services/availability.service";
 import {UpdateAvaibality} from "../models/UpdateAvaibality";
 import {NgbRatingConfig} from "@ng-bootstrap/ng-bootstrap";
+import {PostsService} from "../services/posts.service";
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
 
@@ -37,7 +38,7 @@ export class ProfileComponent implements OnInit {
   public displayCommentBool: boolean = false;
   public listAllCategories: string[] = [];
   public displayMoreComment: boolean = false;
-  public listAllSkills: [{ category: string, id: number, skill: string }] = [{skill: '', id: -1, category: ''}];
+  public listAllSkills: any = [];
   public idToken: number = 0;
   public listAllAvaibality: [{ id: number, day: string, startHour: number, endHour: number }] = [{
     id: -1,
@@ -70,8 +71,22 @@ export class ProfileComponent implements OnInit {
   currentRate: number = 0;
   public listAllComments: any;
   private availabilityTest: string[][];
+  public displaySignalementBool: boolean = false;
+  public noComment: boolean = true;
+  public displayCertifiedBool: boolean = false;
+  public skillId: number;
+  public returnSucces: boolean = false;
+  public success: string = "success";
+  public images = [944, 1011, 984].map((n) => `https://picsum.photos/id/${n}/900/500`);
+  public listPosts: any = [];
+  public noPost: boolean = false;
+  public displayUpdatePost: boolean = false;
+  public idPostUpdate: number;
 
-  constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router, private availableService: AvailabilityService, private config: NgbRatingConfig) {
+  constructor(private authService: ConnexionService, private updateUserService: SubscribeService,
+              private route: ActivatedRoute, private subscribeService: SubscribeService, private router: Router,
+              private availableService: AvailabilityService, private config: NgbRatingConfig,
+              private postsService: PostsService) {
   }
 
   ngOnInit(): void {
@@ -88,6 +103,7 @@ export class ProfileComponent implements OnInit {
       await this.initSkills();
       await this.initAllAvaibality()
       await this.getAllComments();
+      await this.initPosts();
       this.loading = false;
     });
   }
@@ -175,6 +191,7 @@ export class ProfileComponent implements OnInit {
 
   closeAlert() {
     this.returnError = false;
+    this.returnSucces = false;
   }
 
   modificationUser() {
@@ -247,13 +264,17 @@ export class ProfileComponent implements OnInit {
               this.listAllSkills[0] = {
                 skill: data.response[i]["name"],
                 id: data.response[i]["id"],
-                category: data.response[i]["test"]
+                category: data.response[i]["test"],
+                certified: data.response[i]["certified"],
+                detail: data.response[i]["detail"]
               };
             } else {
               this.listAllSkills.push({
                 skill: data.response[i]["name"],
                 id: data.response[i]["id"],
-                category: data.response[i]["test"]
+                category: data.response[i]["test"],
+                certified: data.response[i]["certified"],
+                detail: data.response[i]["detail"]
               });
             }
           }
@@ -827,6 +848,8 @@ export class ProfileComponent implements OnInit {
       }, (error: any) => {
 
       }, () => {
+        this.noComment = this.listAllComments.length == 0;
+
         for (let i = 0; i < this.listAllComments.length; i++) {
           this.getUserById(this.listAllComments[i].idUserComment);
         }
@@ -862,13 +885,13 @@ export class ProfileComponent implements OnInit {
 
 
   updateAvailability() {
-    this.updateAvaibality.id = this.userId;
+    this.updateAvaibality.idUser = this.userId;
     this.updateAvaibality.arrayAvaibality = this.availabilityTest;
     this.availableService.updateAvailabilityBabysitter(this.updateAvaibality).subscribe(
       (data: any) => {
         //navigate to the next page
-        if (data.response) {
-          console.log(data.response)
+        if (data) {
+          console.log(data)
         } else {
           console.log("error")
         }
@@ -877,5 +900,177 @@ export class ProfileComponent implements OnInit {
 
   addItem($event: string[][]) {
     this.availabilityTest = $event;
+  }
+
+  displaySignalement() {
+    this.displaySignalementBool = !this.displaySignalementBool;
+  }
+
+  createSignalement(value: string) {
+    if (value.length == 0) {
+      this.returnError = true;
+      this.errorMessage = "Veuillez donner un commentaire";
+      return;
+    }
+    let signalement = {
+      idProfile: this.userId,
+      dateTime: new Date(),
+      idSignaler: this.idToken,
+      reason: value
+    }
+    this.availableService.createSignalement(signalement).subscribe(
+      (data: any) => {
+        if (data.response) {
+          this.displaySignalementBool = false;
+          console.log(data.response)
+        } else {
+          this.returnError = true;
+          this.errorMessage = data.message;
+        }
+      })
+  }
+
+  displayCertified(idSkill: number) {
+    this.displayCertifiedBool = !this.displayCertifiedBool;
+    this.skillId = idSkill;
+  }
+
+  createCertified(lastname: string, pass: string) {
+    this.loading = true;
+    let certified = {
+      userName: lastname[0].toUpperCase() + lastname.slice(1),
+      idDiplome: pass,
+    }
+    this.availableService.createCertified(certified, this.skillId).subscribe(
+      async (data: any) => {
+        this.loading = false;
+        if (data.response) {
+          await this.initSkills();
+          await this.displayCertified(this.skillId);
+          this.returnSucces = true;
+          this.errorMessage = "Certification du diplome validée";
+        } else {
+          this.returnError = true;
+          this.errorMessage = "Erreure avec la certification du diplome";
+        }
+      }, (error: any) => {
+        this.returnError = true;
+        this.errorMessage = "Erreure avec la certification du diplome";
+        this.loading = false;
+      })
+  }
+
+  private async initPosts() {
+    //get post by userid
+    this.postsService.getPostByIdUser(this.userId).subscribe(
+      async (data: any) => {
+        if (data.response) {
+          this.listPosts = data.response;
+          if (this.listPosts.length == 0) {
+            this.noPost = true;
+          } else {
+            this.noPost = false;
+            await this.addActivityZoneByPost();
+            await this.addSkillByUser();
+            await this.addAvaibalityPosts();
+            console.log(this.listPosts)
+          }
+        } else {
+          this.noPost = true;
+        }
+      });
+  }
+
+  addActivityZoneByPost() {
+
+    //get acitvity zone by post
+    for (let post of this.listPosts) {
+      if (post.type == 'babysitter') {
+        this.postsService.getActivityZoneByPost(post.id).subscribe(
+          (data: any) => {
+            post.activityZone = [];
+            for (let activityZone of data.response) {
+              post.activityZone.push(activityZone.codeDep);
+            }
+          });
+      }
+    }
+
+  }
+
+  addSkillByUser() {
+    //get acitvity zone by post
+    for (let post of this.listPosts) {
+      if (post.type == 'parent') {
+        this.authService.getSkillsByUserId(post.id).then(
+          (data: any) => {
+            post.skils = [];
+            for (let skill of data.response) {
+              post.skils.push(skill.name);
+            }
+          });
+      }
+    }
+
+  }
+
+  private async addAvaibalityPosts() {
+    //get acitvity zone by post
+    for (let post of this.listPosts) {
+      if (post.type == 'parent') {
+        this.availableService.getByPostId(post.id).subscribe(
+          (data: any) => {
+            post.avaibality = [];
+            for (let avaibality of data.response) {
+              if (!post.avaibality.includes(avaibality.day)) {
+                post.avaibality.push(avaibality.day);
+              }
+            }
+          });
+      }
+    }
+  }
+
+  updatePosts(id: number | null, hourlyWage: string, description: string) {
+    this.displayUpdatePost = !this.displayUpdatePost;
+    if (id == null) {
+      if (hourlyWage.length == 0) {
+        this.returnError = true;
+        this.errorMessage = "Veuillez donner un tarif horaire";
+        return;
+      }
+      if (description.length == 0) {
+        this.returnError = true;
+        this.errorMessage = "Veuillez donner une description";
+        return;
+      }
+      if (hourlyWage.length > 0 && description.length > 0) {
+        if (parseInt(hourlyWage) <= 0) {
+          this.returnError = true;
+          this.errorMessage = "Veuillez donner un tarif horaire valide";
+          return;
+        }
+        let post = {
+          idUser: this.userId,
+          hourlyWage: hourlyWage,
+          description: description,
+          idPost: this.idPostUpdate
+        }
+        this.postsService.updatePost(post).subscribe(
+          (data: any) => {
+            if (data.response) {
+              this.displayUpdatePost = false;
+              this.initPosts();
+              this.returnSucces = true;
+              this.errorMessage = "Post modifié";
+            } else {
+              this.returnError = true;
+              this.errorMessage = data.message;
+            }
+          });
+      }
+      return;
+    }
+    this.idPostUpdate = id;
   }
 }

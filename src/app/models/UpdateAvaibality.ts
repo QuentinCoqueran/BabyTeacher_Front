@@ -1,4 +1,4 @@
 export class UpdateAvaibality {
-  id: number;
+  idUser: number;
   arrayAvaibality: string[][];
 }
