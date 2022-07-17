@@ -48,6 +48,16 @@ export class AdminService {
     return this.http.get<UserSubscribe>(this.urlGetUSerById + "/" + id, header);
   }
 
+  getUserBanById(id: number){
+    let token = localStorage.getItem("token");
+    let header = {
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
+    }
+    console.log(this.urlGetUSerById + "/" + id);
+    return this.http.get<User>(this.urlGetUSerById + "/" + id, header);
+  }
+
   getSignalementByIdProfile(id: number){
     let token = localStorage.getItem("token");
     let header = {

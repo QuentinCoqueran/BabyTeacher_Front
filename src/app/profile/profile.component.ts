@@ -102,12 +102,13 @@ export class ProfileComponent implements OnInit {
         await this.router.navigate(['/login']);
         return;
       }
-      await this.initUserByLogin();
-      await this.initUserByToken();
-      await this.initSkills();
-      await this.initAllAvaibality()
-      await this.getAllComments();
-      await this.initPosts();
+      await this.initUserByLogin().then(async () => {await this.initBanUser()
+        await this.initUserByToken();
+        await this.initSkills();
+        await this.initAllAvaibality()
+        await this.getAllComments();
+        await this.initPosts();});
+
       this.loading = false;
     });
   }
@@ -1099,4 +1100,13 @@ export class ProfileComponent implements OnInit {
     );
   }
 
+  private async initBanUser() {
+    await this.adminService.getUserBanById(this.userId).subscribe(
+      (data: any) => {
+        console.log(data["user"])
+        this.userBan = data["user"];
+      }, (error: any) => {
+      }
+    );
+  }
 }

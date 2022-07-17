@@ -103,8 +103,8 @@
                   problème</i></p>
                 <input type="submit" value="Message" [routerLink]="['/message']"
                        [queryParams]="{login:user['login']}" *ngIf='!samePeople'>
-                <button class="btn btn-md btn-danger mx-3" *ngIf="!samePeople && roleByToken === 'admin' && (userBan.banned === null || userBan.banned == false)" (click)="banUser(user.id)"><i class="fa fa-ban"></i> Bloquer </button>
-                <button class="btn btn-md btn-secondary mx-3"*ngIf="!samePeople && roleByToken === 'admin' && (userBan.banned != false && userBan.banned !== null)" (click)="unBanUser(user.id)"><i class="fa fa-ban"></i> Débloquer </button>
+                <button class="btn btn-md btn-danger mx-3" *ngIf="!samePeople && roleByToken === 'admin' && (userBan.banned === null || userBan.banned == false)" (click)="banUser(userBan.id)"><i class="fa fa-ban"></i> Bloquer </button>
+                <button class="btn btn-md btn-secondary mx-3"*ngIf="!samePeople && roleByToken === 'admin' && (userBan.banned != false && userBan.banned !== null)" (click)="unBanUser(userBan.id)"><i class="fa fa-ban"></i> Débloquer </button>
               </div>
             </div>
           </div>
