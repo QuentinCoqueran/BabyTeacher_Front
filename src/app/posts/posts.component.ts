@@ -38,6 +38,8 @@ export class PostsComponent implements OnInit {
   public hourlyWageFiler: string = "null";
   public searchFilter: string = "null";
   public startSeach: boolean = false;
+  returnSucces: boolean = false;
+  public success : string = "success";
 
 
   constructor(private authService: ConnexionService, private updateUserService: SubscribeService, private route: ActivatedRoute,
@@ -166,6 +168,8 @@ export class PostsComponent implements OnInit {
         this.displaySearchPostsBool = false;
         this.listCommuneSelect = [];
         this.listAllSkill = [];
+        this.returnSucces = true;
+        this.errorMessage = "Votre annonce a été créée avec succès";
       }
     );
   }
