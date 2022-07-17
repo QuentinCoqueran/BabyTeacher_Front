@@ -17,6 +17,8 @@ export class AdminSignalementProfileComponent implements OnInit {
   public userProfile: UserSubscribe;
   public usersInfo: UserSubscribe[] = [];
   public isLoaded: boolean = false;
+  public userLoaded: boolean = false;
+  public loginLoaded: boolean = false;
 
   constructor(private adminService: AdminService, private route: ActivatedRoute, private router: Router) { }
 
@@ -28,9 +30,7 @@ export class AdminSignalementProfileComponent implements OnInit {
 
     this.initUserAdmin()
     this.getUserProfile(this.idProfile)
-    this.getSignalementByProfile(this.idProfile).then(async () => {
-      await this.initUserSignalements();
-    })
+    this.getSignalementByProfile(this.idProfile)
   }
 
   async initUserAdmin(){
@@ -49,24 +49,28 @@ export class AdminSignalementProfileComponent implements OnInit {
       next: async (data: Signalement[]) => {
         this.signalements = data["response"];
         this.haveSignalements = true;
+
+        let cpt :number = 0
+        for (let signalement of this.signalements) {
+          await this.adminService.getUserById(signalement.idSignaler).subscribe({
+            next: (data: UserSubscribe) => {
+              this.usersInfo[signalement.idSignaler] = data["user"];
+              cpt++;
+              if(cpt == this.signalements.length){
+                this.loginLoaded = true;
+              }
+            }, error: (error: any) => {
+              console.log("Pas de profil: " + error);
+            }
+          });
+        }
+
+
       },error: (error: any) => {
         console.log("Pas de signalement: " + error);
       }
     });
 
-
-  }
-
-  async initUserSignalements(){
-    for (let signalement of this.signalements) {
-      await this.adminService.getUserById(signalement.idSignaler).subscribe({
-        next: (data: UserSubscribe) => {
-          this.usersInfo[signalement.idSignaler] = data["user"];
-        }, error: (error: any) => {
-          console.log("Pas de profil: " + error);
-        }
-      });
-    }
   }
 
 
@@ -74,6 +78,7 @@ export class AdminSignalementProfileComponent implements OnInit {
     await this.adminService.getUserById(idProfile).subscribe({
       next: (data: UserSubscribe) => {
         this.userProfile = data["user"];
+        this.userLoaded = true;
       },error: (error: any) => {
         console.log("Pas de profil: " + error);
       }
