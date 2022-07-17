@@ -320,7 +320,6 @@ export class PostsComponent implements OnInit {
     for (let post of this.listPosts) {
       this.authService.getUserById(post.idUser).then(
         (data: any) => {
-          console.log(data.response);
           post.login = data.response[0].login;
           if (data.response[0].photo != null) {
             post.photo = data.response[0].photo;
@@ -328,7 +327,6 @@ export class PostsComponent implements OnInit {
             post.photo = "../../assets/avatar.png";
           }
           this.loading = false;
-          console.log(this.listPosts)
         });
     }
   }
@@ -357,16 +355,18 @@ export class PostsComponent implements OnInit {
         this.hourlyWageFiler = $event.target.value;
         break;
       case "search":
-        this.search = $event.target.value;
+        this.searchFilter = $event.target.value;
+        break;
+      case "":
         break;
       default:
         return;
     }
 
-    if (this.roleFiler == "babysitter") {
-      this.listPosts = this.listPosts.filter(post => post.type == "babysitter");
-    } else if (this.roleFiler == "parent") {
-      this.listPosts = this.listPosts.filter(post => post.type == "parent");
+    if (this.roleFiler == "babysitter" && !this.startSeach) {
+      this.listPosts = this.listPosts.filter(post => post.type === "babysitter");
+    } else if (this.roleFiler == "parent" && !this.startSeach) {
+      this.listPosts = this.listPosts.filter(post => post.type === "parent");
     }
 
     if (this.hourlyWageFiler == "asc") {
@@ -374,11 +374,11 @@ export class PostsComponent implements OnInit {
     } else if (this.hourlyWageFiler == "desc") {
       this.listPosts = this.listPosts.sort((a, b) => b.hourlyWage - a.hourlyWage);
     }
-    if (this.searchFilter == "null") {
+
+    if(this.searchFilter === "false" && this.startSeach){
       this.startSeach = false;
-      this.getAllPost();
+      this.getAllPost()
     }
+
   }
-
-
 }

@@ -22,31 +22,24 @@ export class AdminSignalementComponent implements OnInit {
 
   constructor(private adminService: AdminService, private router: Router) { }
 
-  ngOnInit(): void {
-    this.getSignalements();
-    //this.getPhotoUserById(77)
+  async ngOnInit(){
+    await this.initUserAdmin()
+    await this.getSignalements();
   }
 
-  async initUserAdmin() {
-    this.adminService.isUserLogin().subscribe(
+  async initUserAdmin(){
+    await this.adminService.isUserLogin().subscribe(
       (data: any) => {
       }, (error: any) => {
         console.log("Vous n'êtes pas admin");
         this.router.navigate(['/home']);
       }
-
     );
-
   }
 
   async getSignalements() {
-
-    await this.initUserAdmin();
-
     await this.adminService.getSignalements().subscribe(
       async (data: Signalement[]) => {
-        console.log("test")
-        console.log(data["response"].length);
         if (data["response"].length > 0) {
           this.allSignalements = data["response"];
           for(let signalement of this.allSignalements){
@@ -77,20 +70,15 @@ export class AdminSignalementComponent implements OnInit {
 
   }
 
-  async getPhotoUserById(id: number): Promise<UserSubscribe | undefined> {
-    await this.initUserAdmin();
+  async getPhotoUserById(id: number){
     this.adminService.getUserById(id).subscribe(
       (data: UserSubscribe) => {
-        console.log("data");
-        console.log(data["user"]);
         this.photos[id] = data["user"].photo;
         this.names[id] = data["user"].name;
       }, (error: any) => {
         console.log("Erreur lors de la récupération de l'utilisateur");
-        return undefined;
       }
     );
-    return undefined;
   }
 
   goToSpecificProfile(id: number){
