@@ -18,6 +18,7 @@ export class ConnexionService {
   private urlFistConnexion = `${environment.apiUrl}/auth/getFirstConnexion`;
   private urlAllUser = `${environment.apiUrl}/auth/getAllUsers`;
   private urlGetById = `${environment.apiUrl}/auth/getUserById`;
+  private urlGetUserNonBanned = `${environment.apiUrl}/auth/getUserNonBanned`;
 
   constructor(private http: HttpClient) {
   }
@@ -118,6 +119,16 @@ export class ConnexionService {
   }
 
   getAllUsers() {
+    return new Promise<HttpEvent<any>>((resolve, reject) => {
+      this.http.get<HttpEvent<string>>(this.urlAllUser).subscribe(data => {
+        resolve(data);
+      }, error => {
+        reject(error)
+      });
+    });
+  }
+
+  getAllUsersNonBanned() {
     return new Promise<HttpEvent<any>>((resolve, reject) => {
       this.http.get<HttpEvent<string>>(this.urlAllUser).subscribe(data => {
         resolve(data);
