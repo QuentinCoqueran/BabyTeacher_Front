@@ -75,7 +75,7 @@ export class AdminSignalementComponent implements OnInit {
     this.adminService.getUserById(id).subscribe(
       (data: UserSubscribe) => {
         this.photos[id] = data["user"].photo;
-        this.names[id] = data["user"].name;
+        this.names[id] = data["user"].login;
       }, (error: any) => {
         console.log("Erreur lors de la récupération de l'utilisateur");
       }
