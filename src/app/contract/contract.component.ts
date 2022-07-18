@@ -290,7 +290,6 @@ export class ContractComponent implements OnInit {
     );
   }
 
-
   async moveToHtmlContract(id: number) {
     let check: boolean = false;
     for (let i = 0; i < this.contracts.length; i++) {
