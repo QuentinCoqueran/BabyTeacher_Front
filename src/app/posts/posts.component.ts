@@ -170,6 +170,7 @@ export class PostsComponent implements OnInit {
         this.listAllSkill = [];
         this.returnSucces = true;
         this.errorMessage = "Votre annonce a été créée avec succès";
+        this.getAllPost();
       }
     );
   }
