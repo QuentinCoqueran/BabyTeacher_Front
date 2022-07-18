@@ -34,10 +34,8 @@ export class NavbarComponent implements OnInit {
         : this.login.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
     )
 
-
-
   private async getAllUsers() {
-    let userService = await this.authService.getAllUsers();
+    let userService = await this.authService.getAllUsersNonBanned();
     if (userService) {
       for (let i = 0; i < Object.keys(userService).length; i++) {
         if (this.login[0] == "") {

@@ -229,7 +229,7 @@ export class MessageComponent implements OnInit {
 
   private async getAllUsers() {
     this.login = [""];
-    let userService = await this.authService.getAllUsers();
+    let userService = await this.authService.getAllUsersNonBanned();
     if (userService) {
       for (let i = 0; i < Object.keys(userService).length; i++) {
         if (this.login[0] == "") {

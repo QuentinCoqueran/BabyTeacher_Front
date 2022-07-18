@@ -121,7 +121,7 @@ export class ContractComponent implements OnInit {
   }
 
   private async getAllUsers() {
-    let userService = await this.authService.getAllUsers();
+    let userService = await this.authService.getAllUsersNonBanned();
     if (userService) {
       for (let i = 0; i < Object.keys(userService).length; i++) {
         if (await this.initRole(Object.values(userService)[i]['id']) == "babysitter") {
