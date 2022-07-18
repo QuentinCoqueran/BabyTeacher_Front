@@ -135,7 +135,6 @@ export class ContractComponent implements OnInit {
     }
   }
 
-
   private async initRole(idUser: number) {
     let role = await this.authService.getRoleByToken(idUser);
     if (role) {
