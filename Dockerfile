@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:14.0.0
 
 COPY package.json .
 
@@ -10,4 +10,3 @@ COPY . .
 CMD ng serve --host $HOST --configuration=$CONFIGURATION
 
 EXPOSE 3001
-
