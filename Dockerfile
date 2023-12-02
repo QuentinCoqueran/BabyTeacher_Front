@@ -2,8 +2,8 @@ FROM node:14.0.0
 
 COPY package.json .
 
-ARG HOST=0.0.0.0
-ARG CONFIGURATION=production
+ENV HOST=0.0.0.0
+ENV CONFIGURATION=production
 
 RUN npm install
 COPY . .
