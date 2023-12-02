@@ -1,12 +1,13 @@
-FROM node:14.0.0
+FROM node:14 as build
 
-COPY package.json .
+WORKDIR /usr/local/app
 
-ENV HOST=0.0.0.0
-ENV CONFIGURATION=production
+COPY ./ /usr/local/app/
 
-RUN npm install
-COPY . .
-CMD ng serve --host $HOST --configuration=$CONFIGURATION
+RUN npm run build
 
-EXPOSE 3001
+FROM nginx:latest
+
+COPY --from=build /usr/local/app/dist/frontend /usr/share/nginx/html
+
+EXPOSE 80
