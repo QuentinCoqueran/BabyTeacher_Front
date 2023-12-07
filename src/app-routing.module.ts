@@ -21,9 +21,9 @@ import {AdminUsersComponent} from "./app/admin-users/admin-users.component";
 
 
 const routes: Routes = [
-  {path: '#/login', component: ConnexionUserComponent},
+  {path: 'login', component: ConnexionUserComponent},
   {path: '', redirectTo: 'home', pathMatch: 'full'},
-  {path: '#/subscribe', component: SubscribeUserComponent},
+  {path: 'subscribe', component: SubscribeUserComponent},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'first-connection-babysitter', component: FirstConnectionBabysitterComponent, canActivate: [AuthGuard]},
   {path: 'message', component: MessageComponent, canActivate: [AuthGuard]},
