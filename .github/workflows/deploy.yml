@@ -35,3 +35,4 @@ jobs:
           wait_interval: 30
           propagate_failure: true
           wait_workflow: true
+          client_payload: '{"front":$COMMIT_HASH}'
