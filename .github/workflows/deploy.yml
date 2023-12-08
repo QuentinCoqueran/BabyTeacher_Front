@@ -24,6 +24,9 @@ jobs:
     needs:
       - build-frontend-image
     steps:
+      - name: echo
+        run: echo "${{ COMMIT_HASH }}"
+        
       - name: Trigger terraform workflow
         uses: convictional/trigger-workflow-and-wait@v1.6.5
         with:
@@ -35,4 +38,4 @@ jobs:
           wait_interval: 30
           propagate_failure: true
           wait_workflow: true
-          client_payload: '{"front":$COMMIT_HASH}'
+          client_payload: '{"front":${{ COMMIT_HASH }} }'
