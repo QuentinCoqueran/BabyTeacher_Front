@@ -5,13 +5,16 @@ on:
     branches:
       - main
 
+env:
+  COMMIT_HASH: $(git rev-parse --short ${{ github.sha }})
+
 jobs:
   build-frontend-image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get commit hash
-        run: echo "COMMIT_HASH=$(git rev-parse --short ${{ github.sha }})" >> "$GITHUB_ENV"
+      # - name: Get commit hash
+      #   run: echo "COMMIT_HASH=$(git rev-parse --short ${{ github.sha }})" >> "$GITHUB_ENV"
       - name: Docker login to registry
         run: echo "${{ secrets.REGISTRY_PASS }}" | docker login rg.fr-par.scw.cloud/babyteacher-regitstry -u nologin --password-stdin
       - name: Build the Docker image for the frontend
@@ -25,7 +28,7 @@ jobs:
       - build-frontend-image
     steps:
       - name: echo
-        run: printf '%s\n' "$COMMIT_HASH"
+        run: echo "${{ env.COMMIT_HASH }}"
         
       - name: Trigger terraform workflow
         uses: convictional/trigger-workflow-and-wait@v1.6.5
@@ -38,4 +41,4 @@ jobs:
           wait_interval: 30
           propagate_failure: true
           wait_workflow: true
-          client_payload: '{"front":$COMMIT_HASH}'
+          client_payload: '{"front":"${{ env.COMMIT_HASH }}"}'
