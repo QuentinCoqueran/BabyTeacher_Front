@@ -10,14 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      # - name: Get commit hash
-      #   run: echo "COMMIT_HASH=$(git rev-parse --short ${{ github.sha }})" >> "$GITHUB_ENV"
       - name: Docker login to registry
         run: echo "${{ secrets.REGISTRY_PASS }}" | docker login rg.fr-par.scw.cloud/babyteacher-regitstry -u nologin --password-stdin
       - name: Build the Docker image for the frontend
         run: docker build . --tag rg.fr-par.scw.cloud/babyteacher-registry/frontend:$GITHUB_SHA
       - name: Push the image to private registry
-        run: docker push rg.fr-par.scw.cloud/babyteacher-registry/frontend
+        run: docker push rg.fr-par.scw.cloud/babyteacher-registry/frontend:$GITHUB_SHA
         
   trigger_workflow:
     runs-on: ubuntu-latest
